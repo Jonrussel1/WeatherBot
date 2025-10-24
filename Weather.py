@@ -25,9 +25,7 @@ def coords_to_gridpoints(coordinates):
     station_and_coords = [coordinate_data["gridId"], coordinate_data["gridX"], coordinate_data["gridY"]]
     return station_and_coords
 
-#get forecast from gridpoints
 def forecast_from_gridpoints(station_and_coords):
-#-------------------------------------------------------------------------------------------
     forecast_endpoint = f"{BASE_URL}/gridpoints/{station_and_coords[0]}/{station_and_coords[1]},{station_and_coords[2]}/forecast"
     #get info from api then get specifically the first period
     forecast_data = get_data_as_json(forecast_endpoint, headers)["properties"]["periods"][0]
@@ -38,4 +36,3 @@ def forecast_from_gridpoints(station_and_coords):
 
 def get_weather(coords = [32.9004,-105.9629]):
     return forecast_from_gridpoints(coords_to_gridpoints(coords))
-

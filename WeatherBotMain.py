@@ -1,30 +1,14 @@
 import tkinter as tk
-import requests
-import random
+import Weather
+import os
 
+# to get the location of the current python file
+basedir = os.path.dirname(os.path.abspath(__file__))
 
 root = tk.Tk();  root.geometry("800x600"); root.configure(bg="teal") #SETS UP WINDOW
 msg = tk.StringVar(value="WeatherBot") #VARIABLE TO HOLD TEXT
 tk.Label(root, textvariable=msg, font=("TkDefaultFont",16), fg="Orange", bg="teal").pack(pady=10) #DISPLAYS TEXT
 
-# ...existing code...
-# Live Weather data (moved before mainloop)
-user_agent = "jaysonc678@gmail.com"
-BASE_URL = "https://api.weather.gov"
-station_and_coords = ["EPZ", 124, 104]
-headers = {'User-Agent': user_agent}
-endpoint = f"{BASE_URL}/gridpoints/{station_and_coords[0]}/{station_and_coords[1]},{station_and_coords[2]}/forecast"
-
-try:
-    response = requests.get(endpoint, headers=headers, timeout=5)
-    response.raise_for_status()
-    data = response.json()["properties"]["periods"][0]
-    weather = data["shortForecast"].lower()
-    msg.set(f"It is {weather} outside")   # update the UI text
-except Exception:
-    msg.set("Weather unavailable")
-
-root.mainloop() #RUNS PROGRAM
 # ...existing code...
  
           #DEFINES SETTINGS WINDOW
@@ -50,11 +34,6 @@ def show_searchbar():
     tk.Button(topbar, text="Search", bg="#333", fg="white", bd=0,
               command=lambda: msg.set(f"Searching: {q.get()}")).pack(side="left", padx=6)
     #Once Search is pressed below will show weather info 
-    
-
-
-
-
 
 start_btn = tk.Button(root, text="Start", command=show_searchbar, bg="#333", fg="white", bd=0); start_btn.pack(),
  
@@ -70,48 +49,44 @@ menu.add_command(label="Settings", command=open_settings)
 # ADDS EXIT OPTION
 menu.add_separator(); menu.add_command(label="Exit", command=root.destroy)
  
+#combine basedir with gear.png to access it
+gear_img_location = os.path.join(basedir,'gear.png')
  
 # SETTINGS BUTTON
-img = tk.PhotoImage(file="gear.png").subsample(3, 3)
+img = tk.PhotoImage(file=gear_img_location).subsample(3, 3)
 btn = tk.Button(root, image=img, bd=0, relief="flat", highlightthickness=0,
                 bg="teal", activebackground="teal",
                 command=lambda: menu.tk_popup(root.winfo_pointerx(), root.winfo_pointery()))  #open menu
 btn.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
  
  
+coords_var = tk.StringVar()
+forecast_var = tk.StringVar(value="Current Weather: ")
+forecast= ""
+
+
+#displays whatver is in forecast_var
+forecast_label = tk.Label(root, textvariable=forecast_var, text = forecast_var.get())
+
+#whatevery is typed in is saved to coords_var
+coords_entry = tk.Entry(root, textvariable = coords_var)
+
+#gets coordinates from coords_var and runs get_weather with them, with error validation, then set forecast_var to weather or error message
+def update_weather():
+    coords = coords_var.get().split(',')
+    coords_var.set("")
+    try:
+        forecast_var.set("Current Weather: " + Weather.get_weather(coords).title())
+    except:
+        forecast_var.set("Invalid Coordinates")
+
+#button that runs update_weater() when clicked
+submit_coords_btn = tk.Button(root, text = "Submit", command = update_weather)
+forecast_label.place(relx=0.5, rely=0.2)
+coords_entry.place(relx=0.5, rely=0.4)
+submit_coords_btn.place(relx=0.5, rely=0.5)
+
+ 
 root.mainloop() #RUNS PROGRAM
  
 
-
- 
-
-
-user_agent = "jaysonc678@gmail.com"
-
-BASE_URL = "https://api.weather.gov"
-
-station_and_coords = ["EPZ",124,104]
-
-
-#needed to access api
-headers = {'User-Agent' : f'{user_agent}'}
-#link to data
-endpoint = f"{BASE_URL}/gridpoints/{station_and_coords[0]}/{station_and_coords[1]},{station_and_coords[2]}/forecast"
-
-#get info from api then get specifically the first period
-response = requests.get(endpoint, headers = headers)
-data = response.json()["properties"]["periods"][0]
-
-#save the forecast in lowercase
-weather = data["shortForecast"].lower()
-
-#raise error if api failed
-if response:
-    print("API accessed successfully.")
-else:
-    raise Exception(f"Non-success status code: {response.status_code}")
-
-print(f"It is {weather} outside")
-
-
- 
