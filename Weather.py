@@ -8,7 +8,7 @@ user_agent = "jaysonc678@gmail.com"
 BASE_URL = "https://api.weather.gov"
 headers = {'User-Agent' : f'{user_agent}'}
 
-class Get_weather:
+class Get_Weather:
     def __init__(self):
         super().__init__()
 
@@ -41,5 +41,3 @@ class Get_weather:
         return self.forecast_from_gridpoints(self.coords_to_gridpoints(coords))
     
 
-#create an instance of class = object
-weather = Get_weather()

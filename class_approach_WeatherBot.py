@@ -1,11 +1,17 @@
 from tkinter import *
+import os
+import Weather
 
 
 #class approach calls window by organizing data in a class...
 class Weather_Main_Window(Tk):
+    
     def __init__(self):
         super().__init__()
-        
+        self.weather = Weather.Get_Weather()
+        # to get the location of the current python file
+        self.basedir = os.path.dirname(os.path.abspath(__file__))
+
         #title, icon, size
         self.title('WeatherBot')
         self.geometry("800x600")
@@ -16,6 +22,9 @@ class Weather_Main_Window(Tk):
         self.my_label = Label(self, text='Welcome to WeatherBot', font=('Helvetica', 42))
         self.my_label.pack(pady=20)
     
+    def Get_Weather(self, coords):
+        return self.weather.get_weather(coords)
+    
     def Weather_Button(self):
         self.weather_button = Button(text="Get Weather Info", command=Weather_Window, bg="#333", fg="white", bd=0)
         self.weather_button.pack(pady=30)
@@ -25,7 +34,7 @@ class Weather_Main_Window(Tk):
         self.todo_button.pack(pady=50)
     
     def Setting_Button(self):
-        self.img = PhotoImage(file="gear.png").subsample(3, 3)
+        self.img = PhotoImage(file=self.basedir+"/gear.png").subsample(3, 3)
         self.menu = Menu(self, tearoff=0, bg="red", fg="black")
         self.setting_button = Button(self, image=self.img, bd=0, relief="flat", highlightthickness=0,
                 bg="teal", activebackground="teal", command=Setting_Window)
@@ -68,7 +77,7 @@ class Weather_Window(Tk):
         q = StringVar()
         Entry(self.topbar, textvariable=q, font=("TkDefaultFont",12)).pack(side="left", padx=8, pady=8, fill="x", expand=True)
         Button(self.topbar, text="Search", bg="#333", fg="white", bd=0,
-              command=lambda: q.set(f"Searching: {q.get()}")).pack(side="left", padx=6)
+              command=lambda: q.set(Weather_Main_Window.Get_Weather(32.9004,-105.9629))).pack(side="left", padx=6)
     
     
 class Todo_Window(Tk):
