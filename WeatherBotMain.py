@@ -5,8 +5,8 @@ import os
 # to get the location of the current python file
 basedir = os.path.dirname(os.path.abspath(__file__))
 
-root = tk.Tk();  root.geometry("800x600"); root.configure(bg="teal") #SETS UP WINDOW
-msg = tk.StringVar(value="WeatherBot") #VARIABLE TO HOLD TEXT
+root = tk.Tk(className= "Weather Bot");  root.geometry("800x600"); root.configure(bg="teal") #SETS UP WINDOW
+msg = tk.StringVar(value="Weather Bot") #VARIABLE TO HOLD TEXT
 tk.Label(root, textvariable=msg, font=("TkDefaultFont",16), fg="Orange", bg="teal").pack(pady=10) #DISPLAYS TEXT
 
 # ...existing code...
@@ -24,18 +24,63 @@ def open_settings():
     master = add_slider("Master")
     music  = add_slider("Music")
     sfx    = add_slider("SFX")
+search_var = tk.StringVar()
  
 # DEFINES SEARCH BAR
 def show_searchbar():
     start_btn.destroy()  # or: start_btn.pack_forget()
-    topbar = tk.Frame(root, bg="teal"); topbar.pack(side="top", fill="x")
-    q = tk.StringVar()
-    tk.Entry(topbar, textvariable=q, font=("TkDefaultFont",12)).pack(side="left", padx=8, pady=8, fill="x", expand=True)
-    tk.Button(topbar, text="Search", bg="#333", fg="white", bd=0,
-              command=lambda: msg.set(f"Searching: {q.get()}")).pack(side="left", padx=6)
-    #Once Search is pressed below will show weather info 
+    
+    # Create a stylish search frame with gradient effect
+    search_frame = tk.Frame(root, bg="teal")
+    search_frame.pack(pady=20, padx=30, fill="x")
+    
+    # Create a container for the search elements with a gradient-like effect
+    inner_frame = tk.Frame(search_frame, bg="#008080")  # Darker teal
+    inner_frame.pack(fill="x", padx=2, pady=2)
+    
+    # Search entry with modern styling
+    search_entry = tk.Entry(inner_frame, textvariable=search_var, 
+                           font=("Segoe UI", 12), bg="#f0f8ff", fg="#2c3e50",
+                           relief="flat", insertbackground="#2c3e50")
+    
+    # Add placeholder text
+    def on_entry_click(event):
+        if search_var.get() == "Enter location or activity...":
+            search_var.set("")
+            search_entry.config(fg="#2c3e50")
+    
+    def on_focusout(event):
+        if search_var.get() == "":
+            search_var.set("Enter location or activity...")
+            search_entry.config(fg="#95a5a6")
+    
+    search_var.set("Enter location or activity...")
+    search_entry.config(fg="#95a5a6")
+    search_entry.bind('<FocusIn>', on_entry_click)
+    search_entry.bind('<FocusOut>', on_focusout)
+    
+    # Style the entry
+    search_entry.config(highlightthickness=1, highlightbackground="#008080", highlightcolor="#00a0a0")
+    search_entry.pack(side="left", fill="x", expand=True, ipady=10, padx=(15, 5), pady=5)
+    
+    # Create a simple search button (hover changes color)
+    search_button = tk.Button(inner_frame, text="🔍 Search", font=("Segoe UI", 11, "bold"),
+                              bg="#00a0a0", fg="white", activebackground="#008080",
+                              activeforeground="white", relief="flat", bd=0,
+                              command=lambda:update_weather())
 
-start_btn = tk.Button(root, text="Start", command=show_searchbar, bg="#333", fg="white", bd=0); start_btn.pack(),
+    def on_hover_enter(e):
+        search_button.config(bg="#008080")
+
+    def on_hover_leave(e):
+        search_button.config(bg="#00a0a0")
+
+    search_button.bind("<Enter>", on_hover_enter)
+    search_button.bind("<Leave>", on_hover_leave)
+
+    # Pack the search button with proper padding
+    search_button.pack(side="right", padx=(5, 15), pady=5, ipadx=15, ipady=8)
+start_btn = tk.Button(root, text="Start", command=show_searchbar, bg="#333", fg="white", bd=0); start_btn.pack()
  
  
 # CREATES SETTINGS MENU
@@ -68,25 +113,19 @@ forecast= ""
 #displays whatver is in forecast_var
 forecast_label = tk.Label(root, textvariable=forecast_var, text = forecast_var.get())
 
-#whatevery is typed in is saved to coords_var
-coords_entry = tk.Entry(root, textvariable = coords_var)
-
 #gets coordinates from coords_var and runs get_weather with them, with error validation, then set forecast_var to weather or error message
 def update_weather():
-    coords = coords_var.get().split(',')
-    coords_var.set("")
+    coords = search_var.get().split(',')
+    search_var.set("")
     try:
         forecast_var.set("Current Weather: " + Weather.get_weather(coords).title())
     except:
         forecast_var.set("Invalid Coordinates")
 
-#button that runs update_weater() when clicked
-submit_coords_btn = tk.Button(root, text = "Submit", command = update_weather)
-forecast_label.place(relx=0.5, rely=0.2)
-coords_entry.place(relx=0.5, rely=0.4)
-submit_coords_btn.place(relx=0.5, rely=0.5)
+forecast_label.place(anchor="center", relx = 0.5, rely = 0.25)
 
  
 root.mainloop() #RUNS PROGRAM
  
+
 
