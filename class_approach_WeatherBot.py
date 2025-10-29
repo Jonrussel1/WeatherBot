@@ -122,8 +122,8 @@ class Todo_Window(Toplevel):
         if self.task:
             # Add the task to the list
             self.tasks.append(self.task)
-            self.listbox.insert(tk.END, self.task)
-            self.entry_box.delete(0, tk.END)  # clear the entry field
+            self.listbox.insert("end", self.task)
+            self.entry_box.delete(0, "end")  # clear the entry field
 
 
 class Setting_Window(Toplevel):
