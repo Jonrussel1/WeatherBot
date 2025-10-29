@@ -25,7 +25,7 @@ class Suggestion_Window(Tk):
 
   #  def generate_suggestions(self):
     
-
+#api pulling might be suited here...or a label that commands this function
 
 """ def _add_weather_recommendations(self, condition):
         Add general weather-based recommendations
