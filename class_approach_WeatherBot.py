@@ -91,7 +91,7 @@ class Weather_Window(Toplevel):
         q = StringVar()
         Entry(self.topbar, textvariable=q, font=("TkDefaultFont",12)).pack(side="left", padx=8, pady=8, fill="x", expand=True)
         Button(self.topbar, text="Search", bg="#333", fg="white", bd=0,
-              command=lambda: q.set(self.master.Get_Weather(self.my_label.cget("text")))).pack(side="left", padx=6)
+              command=lambda: q.set(self.master.Get_Weather(q.get()))).pack(side="left", padx=6)
     
     
 class Todo_Window(Toplevel):
