@@ -130,6 +130,24 @@ class Todo_Window(Tk):
         self.title('To Do list')
         self.geometry("800x600")
         self.configure(bg='teal')
+        self.tasks =[]
+
+        self.entry_box = Entry(self, width=40, font=("Arial", 14))
+        self.entry_box.pack(pady=20)
+        
+        self.button = Button(self, text="Add Task", command=self.add_task)
+        self.button.pack()
+
+        self.listbox = Listbox(self, width=50, height=10, font=("Arial", 14))
+        self.listbox.pack(pady=10)
+
+    def add_task(self):
+        self.task = self.entry_box.get()
+        if self.task:
+            # Add the task to the list
+            self.tasks.append(self.task)
+            self.listbox.insert(tk.END, self.task)
+            self.entry_box.delete(0, tk.END)  # clear the entry field
 
 
 class Setting_Window(Tk):
@@ -152,17 +170,18 @@ class Setting_Window(Tk):
         self.Slider.pack(padx=10, pady=2, fill="x")
 
        
-
-        
-
-
 #instantiation
 app = Weather_Main_Window()
 
 
 
+
+
 app.Weather_Button()
+
+
 app.Todo_Button()
+
 app.Setting_Button()
 app.Exit_button()
 
@@ -170,6 +189,18 @@ app.Exit_button()
 
 
 
-
-
+      
 app.mainloop()
+
+
+
+
+
+
+
+
+
+
+
+
+
