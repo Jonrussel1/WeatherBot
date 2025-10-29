@@ -11,10 +11,8 @@ class Get_weather(Tk):
     def __init__(self):
         super().__init__()
 
-         #title, icon, size
-        self.title('WeatherBot')
-        self.geometry("800x600")
-        self.configure(bg='teal')
+       
+       
         #api setup
         self.user_agent = "jaysonc678@gmail.com"
         #needed to access api
@@ -53,5 +51,3 @@ class Get_weather(Tk):
 #create an instance of class = object
 weather = Get_weather()
 weather.get_weather()
-
-weather.mainloop()
