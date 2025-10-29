@@ -118,7 +118,8 @@ def update_weather():
     coords = search_var.get().split(',')
     search_var.set("")
     try:
-        forecast_var.set("Current Weather: " + Weather.get_weather(coords).title())
+        data = Weather.get_weather(coords)
+        forecast_var.set(f"Current Weather: {data[0].title()}\nTemperature: {data[1]}\nLocation: {data[2]}")
     except:
         forecast_var.set("Invalid Coordinates")
 

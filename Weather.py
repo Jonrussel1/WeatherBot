@@ -5,9 +5,7 @@ import random
 
 
 
-class Get_weather(Tk):
-    
-
+class Get_Weather:
     def __init__(self):
         super().__init__()
 
@@ -31,9 +29,11 @@ class Get_weather(Tk):
     def coords_to_gridpoints(self,coordinates):
         self.coordinate_endpoint = f"{self.BASE_URL}/points/{coordinates[0]},{coordinates[1]}"
 
-        self.coordinate_data = self.get_data_as_json(self.coordinate_endpoint, self.headers)["properties"]
-        self.station_and_coords = [self.coordinate_data["gridId"], self.coordinate_data["gridX"], self.coordinate_data["gridY"]]
-        return self.station_and_coords
+        self.coordinate_data = self.get_data_as_json(self.coordinate_endpoint, headers)["properties"]
+        self.location_data = self.coordinate_data["relativeLocation"]["properties"]
+        self.location = f"{self.location_data["city"]}, {self.location_data["state"]}"
+        self.station__coords_and_location = (self.coordinate_data["gridId"], self.coordinate_data["gridX"], self.coordinate_data["gridY"], self.location)
+        return self.station__coords_and_location
 
     def forecast_from_gridpoints(self,station_and_coords):
         self.forecast_endpoint = f"{self.BASE_URL}/gridpoints/{station_and_coords[0]}/{station_and_coords[1]},{station_and_coords[2]}/forecast"
@@ -42,12 +42,12 @@ class Get_weather(Tk):
 
         #save the forecast in lowercase
         self.weather = self.forecast_data["shortForecast"].lower()
-        return self.weather
+        self.temp = self.forecast_data["temperature"]
+        return (self.weather, self.temp, station_and_coords[3])
 
-    def get_weather(self,coords = [32.9004,-105.9629]):
-        return self.forecast_from_gridpoints(self.coords_to_gridpoints(coords))
+    def get_weather(self,coords = "32.9004,-105.9629"):
+        print(coords.split(','))
+        self.data = self.forecast_from_gridpoints(self.coords_to_gridpoints(coords.split(',')))
+        return f"Current Weather: {self.data[0].title()} \nTemperature: {self.data[1]} \nLocation: {self.data[2]}"
     
 
-#create an instance of class = object
-weather = Get_weather()
-weather.get_weather()
