@@ -16,16 +16,18 @@ class Suggestion_Window(Tk):
         self.configure(bg='teal')
         
 
-        self.lbl_frme_rec = LabelFrame(self,text="", padx=10, pady=10)
+        self.lbl_frme_rec = LabelFrame(self, padx=10, pady=10)
         self.lbl_frme_rec.pack(pady=20)
-     #   self.lbl_frme_rec.config(text=self.generate_suggestions)
+        self.lbl_frme_rec.config(text=self.generate_suggestions)
         #labelFrames for each item...
 
 
 
-  #  def generate_suggestions(self):
-    
-#api pulling might be suited here...or a label that commands this function
+    def generate_suggestions(self):
+        self.current_weather = []#pull json keyword data like sunny, cloudy, etc
+        if self.current_weather is 'sunny':
+            self.label_r1 = Label(self, text='You should try...f{}')#generate random sunny suggestion from txt
+            self.label_r1.pack(padx=15,pady=15)
 
 """ def _add_weather_recommendations(self, condition):
         Add general weather-based recommendations
