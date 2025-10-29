@@ -18,7 +18,7 @@ class Get_Weather:
         self.headers = {'User-Agent' : f'{self.user_agent}'}
 
     def get_data_as_json(self,endpoint, headers):
-        self.response = requests.get(endpoint, headers = headers) #raise error if api failed
+        self.response = requests.get(endpoint, headers = self.headers) #raise error if api failed
         if self.response:
             print("API accessed successfully.")
         else:
@@ -29,7 +29,7 @@ class Get_Weather:
     def coords_to_gridpoints(self,coordinates):
         self.coordinate_endpoint = f"{self.BASE_URL}/points/{coordinates[0]},{coordinates[1]}"
 
-        self.coordinate_data = self.get_data_as_json(self.coordinate_endpoint, headers)["properties"]
+        self.coordinate_data = self.get_data_as_json(self.coordinate_endpoint, self.headers)["properties"]
         self.location_data = self.coordinate_data["relativeLocation"]["properties"]
         self.location = f"{self.location_data["city"]}, {self.location_data["state"]}"
         self.station__coords_and_location = (self.coordinate_data["gridId"], self.coordinate_data["gridX"], self.coordinate_data["gridY"], self.location)
