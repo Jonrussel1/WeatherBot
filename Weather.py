@@ -37,7 +37,9 @@ class Get_Weather:
         self.weather = self.forecast_data["shortForecast"].lower()
         return self.weather
 
-    def get_weather(self,coords = [32.9004,-105.9629]):
-        return self.forecast_from_gridpoints(self.coords_to_gridpoints(coords))
+    def get_weather(self,coords = "32.9004,-105.9629"):
+        self.coords = coords.split(",")
+        self.data = self.forecast_from_gridpoints(self.coords_to_gridpoints(self.coords))
+        return f"Current Weather: {self.data[0].title()}\nTemperature: {self.data[1]}\nLocation: {self.data[2]}"
     
 
