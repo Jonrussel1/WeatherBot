@@ -13,9 +13,10 @@ root = tk.Tk(className= "Weather Bot");  root.geometry("800x600"); root.configur
 msg = tk.StringVar(value="Weather Bot") #VARIABLE TO HOLD TEXT
 tk.Label(root, textvariable=msg, font=("TkDefaultFont",16), fg="Orange", bg="teal").pack(pady=10) #DISPLAYS TEXT
 
-# ...existing code...
+# Global variable to store current coordinates
+current_coords = "32.9004,-105.9629"
  
-          #DEFINES SETTINGS WINDOW
+#DEFINES SETTINGS WINDOW
  
 def open_settings():
     w = tk.Toplevel(root); w.title("Settings"); w.resizable(False, False)
@@ -101,6 +102,11 @@ suggestions_var = tk.StringVar(value="Suggestions will appear here...")
 def show_searchbar():
     start_btn.destroy()  # or: start_btn.pack_forget()
     
+    # Instructions label
+    instructions = tk.Label(root, text="Enter coordinates as latitude,longitude\nExample: 32.9004,-105.9629", bg="teal", fg="white",
+font=("TkDefaultFont", 10))
+    instructions.pack(pady=5)
+
     # Create a stylish search frame with gradient effect
     search_frame = tk.Frame(root, bg="teal")
     search_frame.pack(pady=20, padx=30, fill="x")
@@ -116,7 +122,7 @@ def show_searchbar():
     
     # Add placeholder text
     def on_entry_click(event):
-        if search_var.get() == "Enter location or activity...":
+        if search_var.get() == "e.g., 32.9004,-105.9629":
             search_var.set("")
             search_entry.config(fg="#2c3e50")
     
@@ -151,6 +157,11 @@ def show_searchbar():
 
     # Pack the search button with proper padding
     search_button.pack(side="right", padx=(5, 15), pady=5, ipadx=15, ipady=8)
+
+    task_button = tk.button(root, text="Manage Tasks", font=("Segoe UI", 12), bg="00a0a0", fg="white", 
+                            command=open_task_manager)
+    task_button.pack(pady=10)
+
 start_btn = tk.Button(root, text="Start", command=show_searchbar, bg="#333", fg="white", bd=0); start_btn.pack()
  
  
@@ -161,7 +172,9 @@ menu = tk.Menu(root, tearoff=0, bg="red", fg="black")
 # CALLS SETTINGS WINDOW
 menu.add_command(label="Settings", command=open_settings)
  
- 
+# Calls Task Manager
+menu.add_command(label="Task Manager", command=open_task_manager)
+
 # ADDS EXIT OPTION
 menu.add_separator(); menu.add_command(label="Exit", command=root.destroy)
  
@@ -175,14 +188,10 @@ btn = tk.Button(root, image=img, bd=0, relief="flat", highlightthickness=0,
                 command=lambda: menu.tk_popup(root.winfo_pointerx(), root.winfo_pointery()))  #open menu
 btn.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
  
- 
-coords_var = tk.StringVar()
-forecast_var = tk.StringVar(value="Current Weather: ")
-forecast= ""
-
-
+forecast_var = tk.StringVar(value="Weather data will appear here")
 #displays whatever is in forecast_var
-forecast_label = tk.Label(root, textvariable=forecast_var, text = forecast_var.get())
+forecast_label = tk.Label(root, textvariable=forecast_var, bg="teal", fg="white", font=("TkDefaultFont", 12))
+forecast_label.place(anchor="center", relx = 0.5, rely = 0.25)
 
 #Suggestions display
 suggestions_label = tk.Label(root, textvariable=suggestions_var, justify="left", font=("TkDefaultFont", 10), bg="teal", fg="white")
@@ -191,51 +200,59 @@ suggestions_label.place(anchor="center", relx = 0.5, rely = 0.6)
 def update_suggestions_display():
     #Update the suggestions display based on current weather
     try:
-        # Use coordinates stored in coords_var for suggestions
-        coords_text = coords_var.get()
-        if not coords_text:
-            suggestions_var.set("Suggestions:\nNo coordinates available.")
-            return
-        coords = [c.strip() for c in coords_text.split(',') if c.strip()]
-        if not coords:
-            suggestions_var.set("Suggestions:\nNo coordinates available.")
-            return
+        weather_obj = Weather.Get_Weather()
+        raw_data = weather_obj.get_weather_simple(*current_coords.split(','))
+        suggestions = suggestion_engine.generate_suggestions(raw_data)
+        suggestions_text = "Today's Suggestions:\n" + "\n".join(suggestions)
+        suggestions_var.set(suggestions_text)
     except Exception as e:
-        suggestions_var.set(f"Error updating suggestions: {str(e)}")
+        suggestions_var.set("Suggestions:\nEnter valid coordinates to see suggestions")
 
 def update_weather():
-    coords_text = search_var.get()
-    search_var.set("")
-    coords = [c.strip() for c in coords_text.split(',') if c.strip()]
-    if not coords:
-        forecast_var.set("Invalid Coordinates")
-        return
+    global current_coords
+    coords_input = search_var.get().strip()
+    
+    # Handle the placeholder text
+    if coords_input == "e.g., 32.9004,-105.6929":
+        forecast_var.set("Please enter valid coordinates.")
+        return 
+    
     try:
-        data = Weather.get_weather(coords)
-        forecast_var.set(f"Current Weather: {data[0].title()}\nTemperature: {data[1]}\nLocation: {data[2]}")
-        # Store coordinates for other features (suggestions, task manager, etc.)
-        coords_var.set(",".join(coords))
+        # Basic coordinate validation
+        if ',' not in coords_input:
+            forecast_var.set("Error: Use Format: latitude,longitude")
+            return
+        lat, lon = coords_input.split(',', 1)
+        lat = lat.strip()
+        lon = lon.strip()
+
+        # Simple validation
+        float(lat)
+        float(lon)
+
+        current_coords = f"{lat},{lon}"
+
+        # Get weather data
+        weather_obj = Weather.Get_Weather()
+        weather_text = weather_obj.get_weather(current_coords)
+        forecast_var.set(weather_text)
+
+        # Update suggestions
         update_suggestions_display()
-    except Exception:
-        forecast_var.set("Invalid Coordinates")
 
-#gets coordinates from coords_var and runs get_weather with them, with error validation, then set forecast_var to weather or error message
-def update_weather():
-    coords = search_var.get().split(',')
-    search_var.set("")
-    try:
-        data = Weather.get_weather(coords)
-        forecast_var.set(f"Current Weather: {data[0].title()}\nTemperature: {data[1]}\nLocation: {data[2]}")
-    except:
-        forecast_var.set("Invalid Coordinates")
-
-forecast_label.place(anchor="center", relx = 0.5, rely = 0.25)
+    except ValueError:
+        forecast_var.set("Error: Coordinates must be numbers\nExample: 32.9004,-105.9629")
+    except Exception as e:
+        forecast_var.set(f"Error getting weather data: {str(e)}")     
 
 # Add some sample tasks for demonstration
 suggestion_engine.add_task("Mow the lawn", "outdoor")
 suggestion_engine.add_task("Wash the car", "outdoor")
 suggestion_engine.add_task("Clean the garage", "indoor")
 suggestion_engine.add_task("Organize the pantry", "indoor")
+
+# Initialize with default location
+update_weather()
  
 root.mainloop() #RUNS PROGRAM
  
