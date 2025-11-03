@@ -1,131 +1,122 @@
-from tkinter import *
-import tkinter as tk
-
-
-
-
-
-  
-
-class Suggestion_Window(Tk):
+class SuggestionEngine:
     def __init__(self):
-        super().__init__()
+        self.suggestions = []
     
-        self.title('Suggestions')
-        self.geometry("800x600")
-        self.configure(bg='teal')
+    def generate_suggestions(self, weather_data, task_manager=None):
+        # Generate suggestions on task and weather data
+        self.suggestions = []
         
-
-        self.lbl_frme_rec = LabelFrame(self, padx=10, pady=10)
-        self.lbl_frme_rec.pack(pady=20)
-        self.lbl_frme_rec.config(text=self.generate_suggestions)
-        #labelFrames for each item...
-
-
-
-    def generate_suggestions(self):
-        self.current_weather = []#pull json keyword data like sunny, cloudy, etc
-        if self.current_weather is 'sunny':
-            self.label_r1 = Label(self, text='You should try...f{}')#generate random sunny suggestion from txt
-            self.label_r1.pack(padx=15,pady=15)
-
-""" def _add_weather_recommendations(self, condition):
-        Add general weather-based recommendations
-        try:
-            # Rain-related conditions
-            rain_conditions = ["rain", "drizzle", "storm", "thunderstorm"]
-            if any(rain_word in condition for rain_word in rain_conditions):
-                self.suggestions.append("Bring an umbrella or rain jacket")
-
-            # Cold conditions
-            cold_conditions = ["snow", "ice", "freezing", "cold"]
-            if any(cold_word in condition for cold_word in cold_conditions):
-                self.suggestions.append("Wear warm clothing and layers")
-
-            # Hot/sunny conditions
-            hot_conditions = ["sunny", "clear", "hot"]
-            if any(hot_word in condition for hot_word in hot_conditions):
-                self.suggestions.append("Wear sunscreen and stay hydrated")
-
-            # Windy conditions
-            if "wind" in condition:
-                self.suggestions.append("It's windy - secure loose items")
-
-        except Exception as e:
-            print(f"Error in weather recommendations: {e}")
-            self.suggestions.append("Check weather conditions for today")
-
-    def _add_task_suggestions(self, condition, task_list):
-     #   Add suggestions based on tasks and weather compatibility
-        try:
-            # Filter incomplete tasks
-            incomplete_tasks = [task for task in task_list if not task.get('completed', False)]
-
-            # Good weather for outdoor tasks
-            good_outdoor_conditions = ["clear", "sunny", "clouds", "partly cloudy", "fair"]
-            if any(good_cond in condition for good_cond in good_outdoor_conditions):
-                outdoor_tasks = [task for task in incomplete_tasks 
-                               if task.get('category', '').lower() == 'outdoor']
-
-                if outdoor_tasks:
-                    self.suggestions.append("Great day for outdoor tasks!")
-                    for task in outdoor_tasks[:2]:  # Limit to 2 suggestions
-                        self.suggestions.append(f"   ✓ {task.get('description', '')}")
-
-            # Bad weather - suggest indoor tasks
-            bad_weather_conditions = ["rain", "snow", "storm", "thunderstorm"]
-            if any(bad_cond in condition for bad_cond in bad_weather_conditions):
-                indoor_tasks = [task for task in incomplete_tasks 
-                              if task.get('category', '').lower() == 'indoor']
-
-                if indoor_tasks:
-                    self.suggestions.append("Better for indoor activities")
-                    for task in indoor_tasks[:2]:  # Limit to 2 suggestions
-                        self.suggestions.append(f"   ✓ {task.get('description', '')}")
-
-        except Exception as e:
-            print(f"Error in task suggestions: {e}")
-
-    def _add_default_suggestions(self):
-    #Add default suggestions when no tasks are available
-        self.good_cond = ["clear", "sunny", "clouds", "partly cloudy"]
-        self.bad_cond = ["rain", "snow", "storm", "thunderstorm"]
-        self.condition = []
-        if any(self.good_cond in self.condition for self.good_cond in self.good_cond):
-            self.label_show1 = Label(text="Perfect weather for outdoor activities")
-            self.label_show1.pack(pady=60)
-
-        elif any(bad_cond in self.condition for bad_cond in self.bad_cond):
-            self.label_show2 = Label(text="Good day for indoor tasks and relaxation")
-            self.label_show2.pack(pady=60)
+        # Extract data from the real weather response
+        conditions = weather_data['conditions']
+        temp = weather_data['temperature']
+        description = weather_data['description'].lower()
+        wind_speed = weather_data.get('wind_speed', 0)
+        humidity = weather_data.get('humidity', 50)
+        
+        # Weather-based suggestions using REAL data
+        self._add_weather_suggestions(conditions, temp, wind_speed, humidity)
+        
+        # Task-based suggestions if task manager is provided
+        if task_manager:
+            self._add_task_suggestions(conditions, temp, task_manager)
         else:
-            self.label_show3 = Label(text="Add tasks to get weather-specific suggestions!")
-            self.label_show3.pack(pady=60)
-
+            self._add_default_suggestions(conditions)
+        
+        return self.suggestions
     
-    def get_quick_suggestion(self, weather_condition):
+    def _add_weather_suggestions(self, conditions, temp, wind_speed, humidity):
+        # Add suggestions based on weather data
+        # Temperature-based suggestions
+        if temp < 32:
+            self.suggestions.append("FREEZING temperatures - bundle up!")
+            self.suggestions.append("Wear heavy coat, gloves, and hat")
+        elif temp < 50:
+            self.suggestions.append("Chilly day - wear a warm jacket")
+        elif temp > 85:
+            self.suggestions.append("Hot day - stay hydrated and seek shade")
+            if humidity > 70:
+                self.suggestions.append("High humidity - extra hydration needed")
+        elif temp > 75:
+            self.suggestions.append("Warm and pleasant - perfect outdoor weather")
         
+        # Weather condition suggestions
+        if any(word in conditions for word in ["rain", "drizzle"]):
+            self.suggestions.append("Rain expected - bring umbrella/raincoat")
+            self.suggestions.append("Drive carefully - wet roads")
         
+        if "thunderstorm" in conditions:
+            self.suggestions.append("THUNDERSTORM warning - avoid outdoor activities")
+            self.suggestions.append("Stay indoors and away from windows")
         
+        if "snow" in conditions:
+            self.suggestions.append("Snow today - wear boots and warm layers")
+            if temp > 32:
+                self.suggestions.append("Wet snow - roads may be slippery")
         
-        if not weather_condition:
-            return "Enter coordinates to get weather suggestions"
-
-        condition = weather_condition.lower()
-
-        if any(word in condition for word in ["rain", "storm", "drizzle"]):
-            return "Rain expected - bring umbrella"
-        elif any(word in condition for word in ["snow", "ice", "freezing"]):
-            return "Cold weather - dress warmly"
-        elif any(word in condition for word in ["sunny", "clear", "hot"]):
-            return "Sunny day - perfect for outdoors"
-        elif any(word in condition for word in ["cloud", "overcast"]):
-            return "Cloudy but good for activities"
+        if wind_speed > 15:
+            self.suggestions.append("Windy conditions - secure outdoor items")
+        if wind_speed > 25:
+            self.suggestions.append("Very windy - be cautious outdoors")
+        
+        if "clear" in conditions and temp > 65:
+            self.suggestions.append("Perfect clear day - great for outdoor activities!")
+    
+    def _add_task_suggestions(self, conditions, temp, task_manager):
+        # Add suggestions based on user tasks and weather data
+        outdoor_tasks = task_manager.get_tasks_by_category("outdoor")
+        indoor_tasks = task_manager.get_tasks_by_category("indoor")
+        
+        # Optimal outdoor conditions
+        is_good_outdoor = (
+            any(word in conditions for word in ["clear", "clouds"]) and 
+            not any(word in conditions for word in ["rain", "snow", "thunderstorm"]) and
+            temp >= 55 and temp <= 85 and
+            "extreme" not in conditions
+        )
+        
+        # Good weather for outdoor tasks
+        if is_good_outdoor and outdoor_tasks:
+            self.suggestions.append("EXCELLENT conditions for outdoor tasks:")
+            for task in outdoor_tasks[:3]:
+                self.suggestions.append(f"{task['description']}")
+        
+        # Bad weather for outdoor tasks
+        elif any(word in conditions for word in ["rain", "snow", "thunderstorm"]) and indoor_tasks:
+            self.suggestions.append("Perfect weather for indoor tasks:")
+            for task in indoor_tasks[:3]:
+                self.suggestions.append(f"{task['description']}")
+        
+        # Marginal outdoor conditions
+        elif outdoor_tasks and (temp < 50 or temp > 85):
+            self.suggestions.append("Challenging conditions for outdoor tasks:")
+            for task in outdoor_tasks[:2]:
+                self.suggestions.append(f"{task['description']} (dress appropriately)")
+    
+    def _add_default_suggestions(self, conditions):
+        # Default suggestions if no task is added
+        if any(word in conditions for word in ["clear", "clouds"]):
+            self.suggestions.append("Add outdoor tasks to get activity suggestions!")
+        elif any(word in conditions for word in ["rain", "storm", "snow"]):
+            self.suggestions.append("Add indoor tasks for bad weather ideas!")
         else:
-            return "Check your tasks for today's plans"
-            """
+            self.suggestions.append("Add tasks to get personalized recommendations!")
+    
+    def get_quick_tip(self, weather_data):
+        # Quick weather tip based on data
+        conditions = weather_data['conditions']
+        temp = weather_data['temperature']
         
-#instantiation
-app = Suggestion_Window()
-
-app.mainloop()
+        if "thunderstorm" in conditions:
+            return "Storm warning - stay indoors!"
+        elif "rain" in conditions:
+            return "Rainy day - bring umbrella"
+        elif "snow" in conditions:
+            return "Snow today - dress warm"
+        elif temp > 85:
+            return "Hot! Stay hydrated"
+        elif temp < 32:
+            return "Freezing! Bundle up"
+        elif "clear" in conditions and temp > 65:
+            return "Perfect day for outdoors!"
+        else:
+            return "Check suggestions for today's plan"
