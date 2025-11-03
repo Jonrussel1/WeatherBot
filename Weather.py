@@ -32,22 +32,21 @@ class Get_Weather:
         self.coordinate_data = self.get_data_as_json(self.coordinate_endpoint, self.headers)["properties"]
         self.location_data = self.coordinate_data["relativeLocation"]["properties"]
         self.location = f"{self.location_data["city"]}, {self.location_data["state"]}"
-        self.station__coords_and_location = (self.coordinate_data["gridId"], self.coordinate_data["gridX"], self.coordinate_data["gridY"], self.location)
+        self.station__coords_and_location = {"gridId":self.coordinate_data["gridId"], "x":self.coordinate_data["gridX"], "y":self.coordinate_data["gridY"], "location":self.location}
         return self.station__coords_and_location
 
     def forecast_from_gridpoints(self,station_and_coords):
-        self.forecast_endpoint = f"{self.BASE_URL}/gridpoints/{station_and_coords[0]}/{station_and_coords[1]},{station_and_coords[2]}/forecast"
+        self.forecast_endpoint = f"{self.BASE_URL}/gridpoints/{station_and_coords["gridId"]}/{station_and_coords["x"]},{station_and_coords["y"]}/forecast"
         #get info from api then get specifically the first period
         self.forecast_data = self.get_data_as_json(self.forecast_endpoint, self.headers)["properties"]["periods"][0]
 
         #save the forecast in lowercase
         self.weather = self.forecast_data["shortForecast"].lower()
         self.temp = self.forecast_data["temperature"]
-        return (self.weather, self.temp, station_and_coords[3])
+        return {"weather":self.weather, "temp":self.temp, "location":station_and_coords["location"]}
 
     def get_weather(self,coords = "32.9004,-105.9629"):
-        print(coords.split(','))
         self.data = self.forecast_from_gridpoints(self.coords_to_gridpoints(coords.split(',')))
-        return f"Current Weather: {self.data[0].title()} \nTemperature: {self.data[1]} \nLocation: {self.data[2]}"
+        return f"Current Weather: {self.data["weather"].title()} | Temperature: {self.data["temp"]} | Location: {self.data["location"]}"
     
 
