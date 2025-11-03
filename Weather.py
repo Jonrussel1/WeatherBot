@@ -4,7 +4,7 @@ import random
 class Get_Weather:
     def __init__(self):
         # REPLACE THIS WITH YOUR ACTUAL API KEY
-        self.api_key = "your_actual_api_key_here"  
+        self.api_key = "fb8e60a12a00ddbc1d6c3f3b02f61728"  
         self.base_url = "https://api.openweathermap.org/data/2.5/weather"
     
     def get_weather_data(self, lat, lon):
