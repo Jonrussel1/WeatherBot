@@ -5,8 +5,8 @@ import os
 # to get the location of the current python file
 basedir = os.path.dirname(os.path.abspath(__file__))
 
-root = tk.Tk();  root.geometry("800x600"); root.configure(bg="teal") #SETS UP WINDOW
-msg = tk.StringVar(value="WeatherBot") #VARIABLE TO HOLD TEXT
+root = tk.Tk(className= "Weather Bot");  root.geometry("800x600"); root.configure(bg="teal") #SETS UP WINDOW
+msg = tk.StringVar(value="Weather Bot") #VARIABLE TO HOLD TEXT
 tk.Label(root, textvariable=msg, font=("TkDefaultFont",16), fg="Orange", bg="teal").pack(pady=10) #DISPLAYS TEXT
 
 # ...existing code...
@@ -24,6 +24,7 @@ def open_settings():
     master = add_slider("Master")
     music  = add_slider("Music")
     sfx    = add_slider("SFX")
+search_var = tk.StringVar()
  
 # DEFINES SEARCH BAR
 def show_searchbar():
@@ -38,14 +39,13 @@ def show_searchbar():
     inner_frame.pack(fill="x", padx=2, pady=2)
     
     # Search entry with modern styling
-    search_var = tk.StringVar()
     search_entry = tk.Entry(inner_frame, textvariable=search_var, 
                            font=("Segoe UI", 12), bg="#f0f8ff", fg="#2c3e50",
                            relief="flat", insertbackground="#2c3e50")
     
     # Add placeholder text
     def on_entry_click(event):
-        if search_var.get() == "Enter location...":
+        if search_var.get() == "Enter location or activity...":
             search_var.set("")
             search_entry.config(fg="#2c3e50")
     
@@ -67,7 +67,7 @@ def show_searchbar():
     search_button = tk.Button(inner_frame, text="🔍 Search", font=("Segoe UI", 11, "bold"),
                               bg="#00a0a0", fg="white", activebackground="#008080",
                               activeforeground="white", relief="flat", bd=0,
-                              command=lambda: fetch_weather())
+                              command=lambda:update_weather())
 
     def on_hover_enter(e):
         search_button.config(bg="#008080")
@@ -113,23 +113,17 @@ forecast= ""
 #displays whatver is in forecast_var
 forecast_label = tk.Label(root, textvariable=forecast_var, text = forecast_var.get())
 
-#whatevery is typed in is saved to coords_var
-coords_entry = tk.Entry(root, textvariable = coords_var)
-
 #gets coordinates from coords_var and runs get_weather with them, with error validation, then set forecast_var to weather or error message
 def update_weather():
-    coords = coords_var.get().split(',')
-    coords_var.set("")
+    coords = search_var.get().split(',')
+    search_var.set("")
     try:
-        forecast_var.set("Current Weather: " + Weather.get_weather(coords).title())
+        data = Weather.get_weather(coords)
+        forecast_var.set(f"Current Weather: {data[0].title()}\nTemperature: {data[1]}\nLocation: {data[2]}")
     except:
         forecast_var.set("Invalid Coordinates")
 
-#button that runs update_weater() when clicked
-submit_coords_btn = tk.Button(root, text = "Submit", command = update_weather)
-forecast_label.place(relx=0.5, rely=0.2)
-coords_entry.place(relx=0.5, rely=0.4)
-submit_coords_btn.place(relx=0.5, rely=0.5)
+forecast_label.place(anchor="center", relx = 0.5, rely = 0.25)
 
  
 root.mainloop() #RUNS PROGRAM

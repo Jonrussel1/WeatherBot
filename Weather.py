@@ -1,38 +1,52 @@
+from tkinter import *
+import tkinter as tk
 import requests
 import random
 
 
-#api setup
-#---------------------------------------------------------------
-def get_data_as_json(endpoint, headers):
-    response = requests.get(endpoint, headers = headers)#raise error if api failed
-    if response:
-        print("API accessed successfully.")
-    else:
-        raise Exception(f"Non-success status code: {response.status_code}")
-    return response.json()
 
-user_agent = "jaysonc678@gmail.com"
+class Get_Weather:
+    def __init__(self):
+        super().__init__()
 
-#needed to access api
-BASE_URL = "https://api.weather.gov"
-headers = {'User-Agent' : f'{user_agent}'}
+       
+       
+        #api setup
+        self.user_agent = "jaysonc678@gmail.com"
+        #needed to access api
+        self.BASE_URL = "https://api.weather.gov"
+        self.headers = {'User-Agent' : f'{self.user_agent}'}
 
-def coords_to_gridpoints(coordinates):
-    coordinate_endpoint = f"{BASE_URL}/points/{coordinates[0]},{coordinates[1]}"
+    def get_data_as_json(self,endpoint, headers):
+        self.response = requests.get(endpoint, headers = self.headers) #raise error if api failed
+        if self.response:
+            print("API accessed successfully.")
+        else:
+            raise Exception(f"Non-success status code: {self.response.status_code}")
+        return self.response.json()
 
-    coordinate_data = get_data_as_json(coordinate_endpoint, headers)["properties"]
-    station_and_coords = [coordinate_data["gridId"], coordinate_data["gridX"], coordinate_data["gridY"]]
-    return station_and_coords
 
-def forecast_from_gridpoints(station_and_coords):
-    forecast_endpoint = f"{BASE_URL}/gridpoints/{station_and_coords[0]}/{station_and_coords[1]},{station_and_coords[2]}/forecast"
-    #get info from api then get specifically the first period
-    forecast_data = get_data_as_json(forecast_endpoint, headers)["properties"]["periods"][0]
+    def coords_to_gridpoints(self,coordinates):
+        self.coordinate_endpoint = f"{self.BASE_URL}/points/{coordinates[0]},{coordinates[1]}"
 
-    #save the forecast in lowercase
-    weather = forecast_data["shortForecast"].lower()
-    return weather
+        self.coordinate_data = self.get_data_as_json(self.coordinate_endpoint, self.headers)["properties"]
+        self.location_data = self.coordinate_data["relativeLocation"]["properties"]
+        self.location = f"{self.location_data["city"]}, {self.location_data["state"]}"
+        self.station__coords_and_location = {"gridId":self.coordinate_data["gridId"], "x":self.coordinate_data["gridX"], "y":self.coordinate_data["gridY"], "location":self.location}
+        return self.station__coords_and_location
 
-def get_weather(coords = [32.9004,-105.9629]):
-    return forecast_from_gridpoints(coords_to_gridpoints(coords))
+    def forecast_from_gridpoints(self,station_and_coords):
+        self.forecast_endpoint = f"{self.BASE_URL}/gridpoints/{station_and_coords["gridId"]}/{station_and_coords["x"]},{station_and_coords["y"]}/forecast"
+        #get info from api then get specifically the first period
+        self.forecast_data = self.get_data_as_json(self.forecast_endpoint, self.headers)["properties"]["periods"][0]
+
+        #save the forecast in lowercase
+        self.weather = self.forecast_data["shortForecast"].lower()
+        self.temp = self.forecast_data["temperature"]
+        return {"weather":self.weather, "temp":self.temp, "location":station_and_coords["location"]}
+
+    def get_weather(self,coords = "32.9004,-105.9629"):
+        self.data = self.forecast_from_gridpoints(self.coords_to_gridpoints(coords.split(',')))
+        return f"Current Weather: {self.data["weather"].title()} | Temperature: {self.data["temp"]} | Location: {self.data["location"]}"
+    
+
