@@ -1,3 +1,0 @@
-go running
-go hiking
-gardening
