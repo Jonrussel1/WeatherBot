@@ -191,14 +191,33 @@ suggestions_label.place(anchor="center", relx = 0.5, rely = 0.6)
 def update_suggestions_display():
     #Update the suggestions display based on current weather
     try:
-        #Get the raw weather data for suggestions
-        weather_obj = Weather.Get_Weather()
-        raw_data = weather_obj.forecast_from_gridpoints(weather_obj.coords_to_gridpoints(current_coords.split(',')))
-        suggestions = suggestion_engine.generate_suggestions(raw_data)
-        suggestions_text = "Suggestions:\n" + "\n".join(suggestions)
-        suggestions_var.set(suggestions_text)
+        # Use coordinates stored in coords_var for suggestions
+        coords_text = coords_var.get()
+        if not coords_text:
+            suggestions_var.set("Suggestions:\nNo coordinates available.")
+            return
+        coords = [c.strip() for c in coords_text.split(',') if c.strip()]
+        if not coords:
+            suggestions_var.set("Suggestions:\nNo coordinates available.")
+            return
     except Exception as e:
-        suggestions_var.set("Suggestions:\nUnable to generate suggestions.")
+        suggestions_var.set(f"Error updating suggestions: {str(e)}")
+
+def update_weather():
+    coords_text = search_var.get()
+    search_var.set("")
+    coords = [c.strip() for c in coords_text.split(',') if c.strip()]
+    if not coords:
+        forecast_var.set("Invalid Coordinates")
+        return
+    try:
+        data = Weather.get_weather(coords)
+        forecast_var.set(f"Current Weather: {data[0].title()}\nTemperature: {data[1]}\nLocation: {data[2]}")
+        # Store coordinates for other features (suggestions, task manager, etc.)
+        coords_var.set(",".join(coords))
+        update_suggestions_display()
+    except Exception:
+        forecast_var.set("Invalid Coordinates")
 
 #gets coordinates from coords_var and runs get_weather with them, with error validation, then set forecast_var to weather or error message
 def update_weather():
