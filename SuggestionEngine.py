@@ -31,43 +31,50 @@ class SuggestionEngine:
         incomplete_tasks = self.get_incomplete_tasks()
         
         # Extract weather information
-        weather_text = weather_data[0].lower() if isinstance(weather_data, tuple) else str(weather_data).lower()
-        temp = weather_data[1] if isinstance(weather_data, tuple) and len(weather_data) > 1 else None
+        conditions = weather_data['conditions']
+        temp = weather_data['temperature']
+        description = weather_data['description'].lower()
         
         # General weather recommendations
-        if temp is not None:
-            if temp < 50:
-                suggestions.append("Wear a warm coat today")
-            elif temp > 80:
-                suggestions.append("Stay hydrated and wear sunscreen")
+        if temp < 50:
+            suggestions.append("❄️ Wear a warm coat today")
+        elif temp > 85:
+            suggestions.append("☀️ Stay hydrated and wear sunscreen")
+        elif temp > 75:
+            suggestions.append("😎 Perfect weather for outdoor activities!")
         
-        if any(word in weather_text for word in ['rain', 'shower', 'storm', 'precip']):
-            suggestions.append("Bring an umbrella or rain jacket")
+        if any(word in conditions for word in ['rain', 'snow', 'thunderstorm']):
+            suggestions.append("🌧️ Bring an umbrella or rain jacket")
+        elif 'clear' in conditions:
+            suggestions.append("✨ Beautiful clear day ahead!")
         
-        if any(word in weather_text for word in ['sunny', 'clear', 'sun']):
-            suggestions.append("Don't forget your sunglasses")
+        if weather_data['wind_speed'] > 15:
+            suggestions.append("💨 It's windy today - secure loose items")
         
         # Task-specific suggestions
         outdoor_tasks = [task for task in incomplete_tasks if task['category'] == 'outdoor']
         indoor_tasks = [task for task in incomplete_tasks if task['category'] == 'indoor']
         
         # Good weather for outdoor tasks
-        if any(word in weather_text for word in ['sunny', 'clear', 'partly', 'cloud']) and not any(word in weather_text for word in ['rain', 'storm']):
-            if outdoor_tasks:
-                suggestions.append("Great day for outdoor tasks!")
-                for task in outdoor_tasks[:3]:  # Show first 3 outdoor tasks
+        if any(word in conditions for word in ['clear', 'clouds']) and not any(word in conditions for word in ['rain', 'snow', 'thunderstorm']):
+            if outdoor_tasks and temp > 55 and temp < 90:
+                suggestions.append("🌤️ Great day for outdoor tasks!")
+                for task in outdoor_tasks[:3]:
                     suggestions.append(f"   ✓ Consider: {task['description']}")
         
         # Bad weather - suggest indoor tasks
-        elif any(word in weather_text for word in ['rain', 'storm', 'snow', 'thunder']):
+        elif any(word in conditions for word in ['rain', 'snow', 'thunderstorm']):
             if indoor_tasks:
-                suggestions.append("Better to focus on indoor activities")
-                for task in indoor_tasks[:3]:  # Show first 3 indoor tasks
+                suggestions.append("🏠 Better to focus on indoor activities")
+                for task in indoor_tasks[:3]:
                     suggestions.append(f"   ✓ Good time for: {task['description']}")
         
         # If no specific suggestions, provide general ones
-        if not suggestions:
-            suggestions.append("No specific suggestions. Check your tasks and weather!")
+        if len(suggestions) <= 2:  # Only has basic weather suggestions
+            if not incomplete_tasks:
+                suggestions.append("📝 Add some tasks to get personalized suggestions!")
+            else:
+                suggestions.append("📊 Check your tasks for weather-appropriate activities")
         
         return suggestions
     
