@@ -1,18 +1,15 @@
 from tkinter import *
 import tkinter as tk
 import requests
-import random
+import pgeocode
 
 
 
 class Get_Weather:
     def __init__(self):
         super().__init__()
-
-       
-       
         #api setup
-        self.user_agent = "jaysonc678@gmail.com"
+        self.user_agent = "WeatherBot"
         #needed to access api
         self.BASE_URL = "https://api.weather.gov"
         self.headers = {'User-Agent' : f'{self.user_agent}'}
@@ -45,8 +42,14 @@ class Get_Weather:
         self.temp = self.forecast_data["temperature"]
         return {"weather":self.weather, "temp":self.temp, "location":station_and_coords["location"]}
 
-    def get_weather(self,coords = "32.9004,-105.9629"):
-        self.data = self.forecast_from_gridpoints(self.coords_to_gridpoints(coords.split(',')))
+    def get_weather(self,zip = "88310"):
+        self.nomi = pgeocode.Nominatim('us')
+        self.loc_data = self.nomi.query_postal_code(zip)
+        self.coords = [float(self.loc_data["latitude"]),float(self.loc_data["longitude"])]
+        try:
+            self.data = self.forecast_from_gridpoints(self.coords_to_gridpoints(self.coords))
+        except:
+            return f"Invalid zip code"
         return f"Current Weather: {self.data["weather"].title()} | Temperature: {self.data["temp"]} | Location: {self.data["location"]}"
     
 
