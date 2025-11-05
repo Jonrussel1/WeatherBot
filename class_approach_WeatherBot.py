@@ -16,6 +16,7 @@ class Weather_Main_Window(Tk):
         self.geometry("800x600")
         self.configure(bg='teal')
         self.weather = Weather.Get_Weather()
+        self.forecast = "No Forecast"
        
 
         #label
@@ -44,7 +45,8 @@ class Weather_Main_Window(Tk):
         self.setting_button.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
    
     def Get_Weather(self, coords):
-        return self.weather.get_weather(coords)
+        self.forecast = self.weather.get_weather(coords)
+        return f"Current Weather: {self.forecast["weather"].title()} | Temperature: {self.forecast["temp"]} | Location: {self.forecast["location"]}"
     
     def Suggestion_button(self):
         self.suggest_button = Button(self, text='Recommend',command=self.Open_Suggestion_Window,bg='#333',fg='white',bd=0)
@@ -59,7 +61,8 @@ class Weather_Main_Window(Tk):
     def Open_ToDo_Window(self):
         Todo_Window(self)
     def Open_Settings_Window(self):
-        Setting_Window(self)
+        Setting_Window(self) 
+
         
     def Open_Suggestion_Window(self):
         Suggestion_Window(self)

@@ -50,6 +50,6 @@ class Get_Weather:
             self.data = self.forecast_from_gridpoints(self.coords_to_gridpoints(self.coords))
         except:
             return f"Invalid zip code"
-        return f"Current Weather: {self.data["weather"].title()} | Temperature: {self.data["temp"]} | Location: {self.data["location"]}"
+        return self.data
     
 
