@@ -1,7 +1,8 @@
 from tkinter import *
 import os
 import Weather
-
+from TaskManager import TaskManager
+from SuggestionEngine import SuggestionEngine
 
 #class approach calls window by organizing data in a class...
 class Weather_Main_Window(Tk):
@@ -17,7 +18,11 @@ class Weather_Main_Window(Tk):
         self.configure(bg='teal')
         self.weather = Weather.Get_Weather()
         self.forecast = "No Forecast"
-       
+        self.current_weather_data = None
+
+        #initialize suggestion engine and task manager
+        self.suggestion_engine = SuggestionEngine() 
+        self.task_manager = TaskManager()
 
         #label
         self.my_label = Label(self, text='Welcome to WeatherBot', font=('Helvetica', 42))
@@ -34,7 +39,7 @@ class Weather_Main_Window(Tk):
         self.weather_button.pack(pady=30)
         
     def Todo_Button(self):
-        self.todo_button = Button(self, text='To Do list', command=self.Open_ToDo_Window, bg='#333',fg='white',bd=0)
+        self.todo_button = Button(self, text='To Do List', command=self.Open_ToDo_Window, bg='#333',fg='white',bd=0)
         self.todo_button.pack(pady=50)
     
     def Setting_Button(self):
@@ -45,11 +50,17 @@ class Weather_Main_Window(Tk):
         self.setting_button.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
    
     def Get_Weather(self, coords):
-        self.forecast = self.weather.get_weather(coords)
-        return f"Current Weather: {self.forecast["weather"].title()} | Temperature: {self.forecast["temp"]} | Location: {self.forecast["location"]}"
+        try:
+            self.forecast = self.weather.get_weather(coords)
+            self.current_weather_data = self.forecast
+            return f"Current Weather: {self.forecast['weather'].title()} | Temperature: {self.forecast['temp']} | Location: {self.forecast['location']}"
+        except:
+            self.current_weather_data = None
+            return "Invalid coordinates or weather data unavailable."
+        
     
     def Suggestion_button(self):
-        self.suggest_button = Button(self, text='Recommend',command=self.Open_Suggestion_Window,bg='#333',fg='white',bd=0)
+        self.suggest_button = Button(self, text='Suggestions',command=self.Open_Suggestion_Window,bg='#333',fg='white',bd=0)
         self.suggest_button.pack(pady=60)
  
     def Exit_button(self):
@@ -58,14 +69,16 @@ class Weather_Main_Window(Tk):
     
     def Open_Weather_Window(self):
         Weather_Window(self)
+
     def Open_ToDo_Window(self):
         Todo_Window(self)
+
     def Open_Settings_Window(self):
         Setting_Window(self) 
 
-        
     def Open_Suggestion_Window(self):
         Suggestion_Window(self)
+
 class Weather_Window(Toplevel):
    
     def __init__(self, master): 
@@ -101,33 +114,72 @@ class Weather_Window(Toplevel):
 class Todo_Window(Toplevel):
     
     def __init__(self, master): 
-        
         super().__init__(master)
+        self.master = master
 
-        
-         #title, icon, size
-        self.title('To Do list')
-        self.geometry("800x600")
+        #title, icon, size
+        self.title('Task Manager')
+        self.geometry("600x400")
         self.configure(bg='teal')
-        self.tasks =[]
-
-        self.entry_box = Entry(self, width=40, font=("Arial", 14))
-        self.entry_box.pack(pady=20)
         
-        self.button = Button(self, text="Add Task", command=self.add_task)
-        self.button.pack()
+        #Task input frame
+        input_frame = Frame(self, bg='teal')
+        input_frame.pack(pady=10)
 
-        self.listbox = Listbox(self, width=50, height=10, font=("Arial", 14))
-        self.listbox.pack(pady=10)
+        Label(input_frame, text='Task:', bg='teal', fg='white').pack(side='left')
+        self.task_entry = Entry(input_frame, width=20, font=('Arial', 12))
+        self.task_entry.pack(side='left', padx=5)
 
-    def add_task(self):
-        self.task = self.entry_box.get()
-        if self.task:
-            # Add the task to the list
-            self.tasks.append(self.task)
-            self.listbox.insert("end", self.task)
-            self.entry_box.delete(0, "end")  # clear the entry field
-
+        self.category_var = StringVar(value="outdoor")
+        Radiobutton(input_frame, text="Outdoor", variable=self.category_var, 
+                   value="outdoor", bg='teal', fg='white', selectcolor='teal').pack(side="left")
+        Radiobutton(input_frame, text="Indoor", variable=self.category_var, 
+                   value="indoor", bg='teal', fg='white', selectcolor='teal').pack(side="left")
+        
+        Button(input_frame, text="Add Task", command=self.add_new_task).pack(side="left", padx=5)
+        
+        # Task list frame
+        list_frame = Frame(self, bg='teal')
+        list_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        Label(list_frame, text="Your Tasks:", font=("Arial", 14, "bold"), 
+              bg='teal', fg='white').pack(anchor="w")
+        
+        self.task_list_frame = Frame(list_frame, bg='teal')
+        self.task_list_frame.pack(fill="both", expand=True)
+        
+        self.update_task_list()
+    
+    def add_new_task(self):
+        description = self.task_entry.get().strip()
+        if description:
+            self.master.task_manager.add_task(description, self.category_var.get())
+            self.task_entry.delete(0, END)
+            self.update_task_list()
+    
+    def update_task_list(self):
+        for widget in self.task_list_frame.winfo_children():
+            widget.destroy()
+        
+        for task in self.master.task_manager.get_all_tasks():
+            task_frame = Frame(self.task_list_frame, bg='teal')
+            task_frame.pack(fill="x", pady=2)
+            
+            status = "✓" if task['completed'] else "○"
+            color = "light gray" if task['completed'] else "white"
+            task_text = f"{status} {task['description']} ({task['category']})"
+            
+            Label(task_frame, text=task_text, fg=color, bg='teal', 
+                  font=("Arial", 11)).pack(side="left")
+            
+            if not task['completed']:
+                Button(task_frame, text="Complete", 
+                      command=lambda t=task: self.complete_task(t['id']),
+                      font=("Arial", 8)).pack(side="right")
+    
+    def complete_task(self, task_id):
+        self.master.task_manager.complete_task(task_id)
+        self.update_task_list()
 
 class Setting_Window(Toplevel):
     
@@ -151,135 +203,62 @@ class Setting_Window(Toplevel):
 class Suggestion_Window(Toplevel):
     
     def __init__(self, master):
-
-        super().__init__()
-            #title, icon, size
-        self.title('Recommendations')
-        self.geometry("800x600")
+        super().__init__(master)
+        self.master = master
+        
+        #title, icon, size
+        self.title('Smart Suggestions')
+        self.geometry("700x500")
         self.configure(bg='teal')
-        self.suggestions = []
-
-    def generate_suggestions(self, weather_condition, task_list=None):
-        """
-        Generate suggestions based on weather conditions from main Weather module.
-
-        Args:
-            weather_condition (str): Weather description from Weather.get_weather()
-            task_list (list): List of task dictionaries (optional for now)
-
-        Returns:
-            list: List of suggestion strings ready for tkinter display
-        """
-        self.suggestions = []
-
-        # Convert weather condition to lowercase for consistent checking
-        condition = weather_condition.lower() if weather_condition else ""
-
-        # Add general weather recommendations based on condition
-        self._add_weather_recommendations(condition)
-
-        # Add task-specific suggestions if tasks are provided
-        if task_list:
-            self._add_task_suggestions(condition, task_list)
+        
+        Label(self, text="Smart Suggestions", font=('Helvetica', 20), bg='teal', fg='white').pack(pady=20)
+        
+        # Suggestions display
+        self.suggestions_text = Text(self, wrap=WORD, width=60, height=15, 
+                                    font=("Arial", 12), bg='lightcyan')
+        self.suggestions_text.pack(pady=10, padx=20, fill=BOTH, expand=True)
+        
+        # Refresh button
+        Button(self, text="Refresh Suggestions", command=self.refresh_suggestions,font=("Arial", 12), bg='#00a0a0', fg='white').pack(pady=10)
+        
+        # Load initial suggestions
+        self.refresh_suggestions()
+    
+    def refresh_suggestions(self):
+        """Refresh suggestions based on current weather and tasks"""
+        self.suggestions_text.delete(1.0, END)
+        
+        # Get current weather data for suggestions
+        weather_data = self.get_weather_data_for_suggestions()
+        
+        if weather_data:
+            # Generate suggestions using your SuggestionEngine
+            suggestions = self.master.suggestion_engine.generate_suggestions(
+                weather_data, self.master.task_manager
+            )
+            
+            # Display suggestions
+            if suggestions:
+                for suggestion in suggestions:
+                    self.suggestions_text.insert(END, f"• {suggestion}\n\n")
+            else:
+                self.suggestions_text.insert(END, "Get weather data and add tasks to see personalized suggestions!")
         else:
-            # Default suggestions when no tasks are available
-            self._add_default_suggestions(condition)
-
-        return self.suggestions
-
-    def _add_weather_recommendations(self, condition):
-        """Add general weather-based recommendations"""
+            self.suggestions_text.insert(END, "Please get weather data first to see suggestions!")
+    
+    def get_weather_data_for_suggestions(self):
+        """Convert current weather to SuggestionEngine format"""
         try:
-            # Rain-related conditions
-            rain_conditions = ["rain", "drizzle", "storm", "thunderstorm"]
-            if any(rain_word in condition for rain_word in rain_conditions):
-                self.suggestions.append("Bring an umbrella or rain jacket")
-
-            # Cold conditions
-            cold_conditions = ["snow", "ice", "freezing", "cold"]
-            if any(cold_word in condition for cold_word in cold_conditions):
-                self.suggestions.append("Wear warm clothing and layers")
-
-            # Hot/sunny conditions
-            hot_conditions = ["sunny", "clear", "hot"]
-            if any(hot_word in condition for hot_word in hot_conditions):
-                self.suggestions.append("Wear sunscreen and stay hydrated")
-
-            # Windy conditions
-            if "wind" in condition:
-                self.suggestions.append("It's windy - secure loose items")
-
-        except Exception as e:
-            print(f"Error in weather recommendations: {e}")
-            self.suggestions.append("Check weather conditions for today")
-
-    def _add_task_suggestions(self, condition, task_list):
-        """Add suggestions based on tasks and weather compatibility"""
-        try:
-            # Filter incomplete tasks
-            incomplete_tasks = [task for task in task_list if not task.get('completed', False)]
-
-            # Good weather for outdoor tasks
-            good_outdoor_conditions = ["clear", "sunny", "clouds", "partly cloudy", "fair"]
-            if any(good_cond in condition for good_cond in good_outdoor_conditions):
-                outdoor_tasks = [task for task in incomplete_tasks 
-                               if task.get('category', '').lower() == 'outdoor']
-
-                if outdoor_tasks:
-                    self.suggestions.append("Great day for outdoor tasks!")
-                    for task in outdoor_tasks[:2]:  # Limit to 2 suggestions
-                        self.suggestions.append(f"   ✓ {task.get('description', '')}")
-
-            # Bad weather - suggest indoor tasks
-            bad_weather_conditions = ["rain", "snow", "storm", "thunderstorm"]
-            if any(bad_cond in condition for bad_cond in bad_weather_conditions):
-                indoor_tasks = [task for task in incomplete_tasks 
-                              if task.get('category', '').lower() == 'indoor']
-
-                if indoor_tasks:
-                    self.suggestions.append("Better for indoor activities")
-                    for task in indoor_tasks[:2]:  # Limit to 2 suggestions
-                        self.suggestions.append(f"   ✓ {task.get('description', '')}")
-
-        except Exception as e:
-            print(f"Error in task suggestions: {e}")
-
-    def _add_default_suggestions(self, condition):
-        """Add default suggestions when no tasks are available"""
-        good_conditions = ["clear", "sunny", "clouds", "partly cloudy"]
-        bad_conditions = ["rain", "snow", "storm", "thunderstorm"]
-
-        if any(good_cond in condition for good_cond in good_conditions):
-            self.suggestions.append("Perfect weather for outdoor activities")
-            self.suggestions.append("Add tasks to get personalized suggestions!")
-        elif any(bad_cond in condition for bad_cond in bad_conditions):
-            self.suggestions.append("Good day for indoor tasks and relaxation")
-            self.suggestions.append("Add tasks to get personalized suggestions!")
-        else:
-            self.suggestions.append("Add tasks to get weather-specific suggestions!")
-
-    def get_quick_suggestion(self, weather_condition):
-        """
-        Get a single, high-priority suggestion for the main display
-
-        Returns:
-            str: Single most important suggestion
-        """
-        if not weather_condition:
-            return "Enter coordinates to get weather suggestions"
-
-        condition = weather_condition.lower()
-
-        if any(word in condition for word in ["rain", "storm", "drizzle"]):
-            return "Rain expected - bring umbrella"
-        elif any(word in condition for word in ["snow", "ice", "freezing"]):
-            return "Cold weather - dress warmly"
-        elif any(word in condition for word in ["sunny", "clear", "hot"]):
-            return "Sunny day - perfect for outdoors"
-        elif any(word in condition for word in ["cloud", "overcast"]):
-            return "Cloudy but good for activities"
-        else:
-            return "Check your tasks for today's plans"
+            if hasattr(self.master, 'forecast') and isinstance(self.master.forecast, dict):
+                return {
+                    'description': self.master.forecast.get('weather', '').lower(),
+                    'temperature': self.master.forecast.get('temp', 72),
+                    'conditions': self.master.forecast.get('weather', '').lower(),
+                    'location': self.master.forecast.get('location', 'Current Location')
+                }
+        except:
+            pass
+        return None
 
 
 
