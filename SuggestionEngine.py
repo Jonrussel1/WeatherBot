@@ -21,6 +21,7 @@ class SuggestionEngine:
         return self.suggestions
     
     def _add_weather_suggestions(self, conditions, temp):
+        # Suggestions based on temperature and conditions
         if temp < 32:
             self.suggestions.append("FREEZING - Bundle up with heavy coat!")
         elif temp < 50:
