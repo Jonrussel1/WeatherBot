@@ -426,26 +426,31 @@ class Suggestion_Window(Toplevel):
         else:
             self.suggestions_text.insert(END, "Please get weather data first to see suggestions!")
     
-def get_weather_data_for_suggestions(self):
-    #Convert current weather to SuggestionEngine format
-    try:
-        # Check both possible weather data locations
-        if hasattr(self.master, 'current_weather_data') and isinstance(self.master.current_weather_data, dict):
-            weather_data = self.master.current_weather_data
-            return {
-                'description': weather_data.get('weather', '').lower(),
-                'temperature': weather_data.get('temp', 72),
-                'conditions': weather_data.get('weather', '').lower(),
-                'location': weather_data.get('location', 'Current Location')
-            }
-        elif hasattr(self.master, 'forecast') and isinstance(self.master.forecast, dict):
-            weather_data = self.master.forecast
-            return {
-                'description': weather_data.get('weather', '').lower(),
-                'temperature': weather_data.get('temp', 72),
-                'conditions': weather_data.get('weather', '').lower(),
-                'location': weather_data.get('location', 'Current Location')
-            }
-    except Exception as e:
-        print(f"Error getting weather data for suggestions: {e}")
-    return None
+    def get_weather_data_for_suggestions(self):
+        #Convert current weather to SuggestionEngine format
+        try:
+            # Check both possible weather data locations
+            if hasattr(self.master, 'current_weather_data') and isinstance(self.master.current_weather_data, dict):
+                weather_data = self.master.current_weather_data
+                return {
+                    'description': weather_data.get('weather', '').lower(),
+                    'temperature': weather_data.get('temp', 72),
+                    'conditions': weather_data.get('weather', '').lower(),
+                    'location': weather_data.get('location', 'Current Location')
+                }
+            elif hasattr(self.master, 'forecast') and isinstance(self.master.forecast, dict):
+                weather_data = self.master.forecast
+                return {
+                    'description': weather_data.get('weather', '').lower(),
+                    'temperature': weather_data.get('temp', 72),
+                    'conditions': weather_data.get('weather', '').lower(),
+                    'location': weather_data.get('location', 'Current Location')
+                }
+        except Exception as e:
+            print(f"Error getting weather data for suggestions: {e}")
+        return None
+    
+    
+#instantiation
+app = Weather_Main_Window()
+app.mainloop()
