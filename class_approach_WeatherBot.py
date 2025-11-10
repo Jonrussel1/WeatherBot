@@ -131,10 +131,8 @@ class Todo_Window(Toplevel):
         self.task_entry.pack(side='left', padx=5)
 
         self.category_var = StringVar(value="outdoor")
-        Radiobutton(input_frame, text="Outdoor", variable=self.category_var, 
-                   value="outdoor", bg='teal', fg='white', selectcolor='teal').pack(side="left")
-        Radiobutton(input_frame, text="Indoor", variable=self.category_var, 
-                   value="indoor", bg='teal', fg='white', selectcolor='teal').pack(side="left")
+        Radiobutton(input_frame, text="Outdoor", variable=self.category_var, value="outdoor", bg='teal', fg='white', selectcolor='teal').pack(side="left")
+        Radiobutton(input_frame, text="Indoor", variable=self.category_var, value="indoor", bg='teal', fg='white', selectcolor='teal').pack(side="left")
         
         Button(input_frame, text="Add Task", command=self.add_new_task).pack(side="left", padx=5)
         
@@ -142,8 +140,7 @@ class Todo_Window(Toplevel):
         list_frame = Frame(self, bg='teal')
         list_frame.pack(fill="both", expand=True, padx=10, pady=10)
         
-        Label(list_frame, text="Your Tasks:", font=("Arial", 14, "bold"), 
-              bg='teal', fg='white').pack(anchor="w")
+        Label(list_frame, text="Your Tasks:", font=("Arial", 14, "bold"), bg='teal', fg='white').pack(anchor="w")
         
         self.task_list_frame = Frame(list_frame, bg='teal')
         self.task_list_frame.pack(fill="both", expand=True)
@@ -214,8 +211,7 @@ class Suggestion_Window(Toplevel):
         Label(self, text="Smart Suggestions", font=('Helvetica', 20), bg='teal', fg='white').pack(pady=20)
         
         # Suggestions display
-        self.suggestions_text = Text(self, wrap=WORD, width=60, height=15, 
-                                    font=("Arial", 12), bg='lightcyan')
+        self.suggestions_text = Text(self, wrap=WORD, width=60, height=15, font=("Arial", 12), bg='lightcyan')
         self.suggestions_text.pack(pady=10, padx=20, fill=BOTH, expand=True)
         
         # Refresh button
@@ -225,7 +221,7 @@ class Suggestion_Window(Toplevel):
         self.refresh_suggestions()
     
     def refresh_suggestions(self):
-        """Refresh suggestions based on current weather and tasks"""
+        #Refresh suggestions based on current weather and tasks
         self.suggestions_text.delete(1.0, END)
         
         # Get current weather data for suggestions
@@ -233,9 +229,7 @@ class Suggestion_Window(Toplevel):
         
         if weather_data:
             # Generate suggestions using your SuggestionEngine
-            suggestions = self.master.suggestion_engine.generate_suggestions(
-                weather_data, self.master.task_manager
-            )
+            suggestions = self.master.suggestion_engine.generate_suggestions(weather_data, self.master.task_manager)
             
             # Display suggestions
             if suggestions:
@@ -247,7 +241,7 @@ class Suggestion_Window(Toplevel):
             self.suggestions_text.insert(END, "Please get weather data first to see suggestions!")
     
     def get_weather_data_for_suggestions(self):
-        """Convert current weather to SuggestionEngine format"""
+        #Convert current weather to SuggestionEngine format
         try:
             if hasattr(self.master, 'forecast') and isinstance(self.master.forecast, dict):
                 return {
