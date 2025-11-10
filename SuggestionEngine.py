@@ -9,7 +9,6 @@ class SuggestionEngine:
             self.suggestions.append("Please get weather data first to see personalized suggestions!")
             return self.suggestions    
         
-        # FIX: Use parentheses () instead of brackets [] for get() method
         conditions = weather_data.get('conditions', '').lower()
         temp = weather_data.get('temperature', 72)
         description = weather_data.get('description', '').lower()
