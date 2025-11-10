@@ -5,9 +5,9 @@ class SuggestionEngine:
     def generate_suggestions(self, weather_data, task_manager=None):
         self.suggestions = []
         
-        conditions = weather_data['conditions']
-        temp = weather_data.get('temperature', 72)
-        description = weather_data['description'].lower()
+        conditions = weather_data['weather']
+        temp = weather_data['temp']
+        location = weather_data['location']
         
         # Weather-based suggestions
         self._add_weather_suggestions(conditions, temp)
