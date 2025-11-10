@@ -67,7 +67,7 @@ class Get_Weather:
             dict: Dictionary containing weather, temp, and location
         """
         #Create link
-       self.forecast_endpoint = f"{self.BASE_URL}/gridpoints/{station_and_coords['gridId']}/{station_and_coords['x']},{station_and_coords['y']}/forecast"
+        self.forecast_endpoint = f"{self.BASE_URL}/gridpoints/{station_and_coords['gridId']}/{station_and_coords['x']},{station_and_coords['y']}/forecast"
         
         #Gets necessary data from json (current half of day, either 00-11 or 12-23)
         self.forecast_data = self.get_data_as_json(self.forecast_endpoint, self.headers)["properties"]["periods"][0]
