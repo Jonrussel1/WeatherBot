@@ -2,6 +2,8 @@ import tkinter as tk
 import Weather
 import os
 
+weather = Weather.Get_Weather()
+
 # to get the location of the current python file
 basedir = os.path.dirname(os.path.abspath(__file__))
 
@@ -107,7 +109,6 @@ btn.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
  
 coords_var = tk.StringVar()
 forecast_var = tk.StringVar(value="Current Weather: ")
-forecast= ""
 
 
 #displays whatver is in forecast_var
@@ -115,11 +116,13 @@ forecast_label = tk.Label(root, textvariable=forecast_var, text = forecast_var.g
 
 #gets coordinates from coords_var and runs get_weather with them, with error validation, then set forecast_var to weather or error message
 def update_weather():
-    coords = search_var.get().split(',')
+    zip = search_var.get()
+    print(zip)
     search_var.set("")
     try:
-        data = Weather.get_weather(coords)
-        forecast_var.set(f"Current Weather: {data[0].title()}\nTemperature: {data[1]}\nLocation: {data[2]}")
+        data = weather.get_weather(zip)
+        print(data)
+        forecast_var.set(f"Current Weather: {data["weather"].title()}\nTemperature: {data["temp"]}\nLocation: {data["location"]}")
     except:
         forecast_var.set("Invalid Coordinates")
 
