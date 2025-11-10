@@ -9,9 +9,10 @@ class SuggestionEngine:
             self.suggestions.append("Please get weather data first to see personalized suggestions!")
             return self.suggestions    
         
-        conditions = weather_data.get['conditions', ''].lower()
+        # FIX: Use parentheses () instead of brackets [] for get() method
+        conditions = weather_data.get('conditions', '').lower()
         temp = weather_data.get('temperature', 72)
-        description = weather_data.get['description', ''].lower()
+        description = weather_data.get('description', '').lower()
         
         # Weather-based suggestions
         self._add_weather_suggestions(conditions, temp, description)
@@ -27,7 +28,7 @@ class SuggestionEngine:
 
         return self.suggestions
     
-    def _add_weather_suggestions(self, conditions, temp):
+    def _add_weather_suggestions(self, conditions, temp, description):
         # Suggestions based on temperature and conditions
         if temp < 32:
             self.suggestions.append("FREEZING - Bundle up with heavy coat!")
