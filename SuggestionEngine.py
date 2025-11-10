@@ -4,23 +4,31 @@ class SuggestionEngine:
     
     def generate_suggestions(self, weather_data, task_manager=None):
         self.suggestions = []
+    
+        if not weather_data:
+            self.suggestions.append("Please get weather data first to see personalized suggestions!")
+            return self.suggestions    
         
-        conditions = weather_data['weather']
-        temp = weather_data['temp']
-        location = weather_data['location']
+        # FIX: Use parentheses () instead of brackets [] for get() method
+        conditions = weather_data.get('conditions', '').lower()
+        temp = weather_data.get('temperature', 72)
+        description = weather_data.get('description', '').lower()
         
         # Weather-based suggestions
-        self._add_weather_suggestions(conditions, temp)
+        self._add_weather_suggestions(conditions, temp, description)
         
         # Task-based suggestions
         if task_manager:
             self._add_task_suggestions(conditions, temp, task_manager)
         else:
-            self._add_default_suggestions(conditions)
+            self.suggestions.append("Add tasks to get personalized activity recommendations!")
         
+        # General activity suggestions based on just weather
+        self._add_general_activity_suggestions(conditions, temp)
+
         return self.suggestions
     
-    def _add_weather_suggestions(self, conditions, temp):
+    def _add_weather_suggestions(self, conditions, temp, description):
         # Suggestions based on temperature and conditions
         if temp < 32:
             self.suggestions.append("FREEZING - Bundle up with heavy coat!")
@@ -29,6 +37,7 @@ class SuggestionEngine:
         elif temp > 85:
             self.suggestions.append("Hot day - Stay hydrated")
         
+        # Weather condition suggestions
         if any(word in conditions for word in ["rain", "drizzle"]):
             self.suggestions.append("Rain expected - Bring umbrella")
         if "snow" in conditions:
@@ -52,8 +61,28 @@ class SuggestionEngine:
             for task in indoor_tasks[:2]:
                 self.suggestions.append(f"{task['description']}")
     
-    def _add_default_suggestions(self, conditions):
-        if "clear" in conditions:
-            self.suggestions.append("Add outdoor tasks for activity suggestions!")
-        elif "rain" in conditions:
-            self.suggestions.append("Add indoor tasks for rainy day ideas!")
+    def _add_general_activity_suggestions(self, conditions, temp):
+        # Add general activity suggestions even when no tasks exist
+        self.suggestions.append("Suggested Activities:")
+        
+        if any(word in conditions for word in ["clear", "sunny", "fair"]):
+            if 60 <= temp <= 80:
+                self.suggestions.append("   • Perfect for walking, hiking, or outdoor sports")
+                self.suggestions.append("   • Great day for gardening or yard work")
+                self.suggestions.append("   • Consider a picnic or outdoor dining")
+            elif temp > 80:
+                self.suggestions.append("   • Good for swimming or water activities")
+                self.suggestions.append("   • Visit air-conditioned spaces like museums")
+        
+        if any(word in conditions for word in ["rain", "drizzle"]):
+            self.suggestions.append("   • Visit museums, libraries, or indoor shopping")
+            self.suggestions.append("   • Perfect for reading, movies, or indoor hobbies")
+            self.suggestions.append("   • Great day for cooking or baking")
+        
+        if any(word in conditions for word in ["snow"]):
+            self.suggestions.append("   • Good for skiing, sledding, or building a snowman")
+            self.suggestions.append("   • Perfect for hot drinks and cozy indoor activities")
+        
+        if any(word in conditions for word in ["cloudy", "overcast"]):
+            self.suggestions.append("   • Comfortable for walking or light outdoor work")
+            self.suggestions.append("   • Good day for running errands or shopping")

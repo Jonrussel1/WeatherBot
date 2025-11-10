@@ -427,15 +427,25 @@ class Suggestion_Window(Toplevel):
             self.suggestions_text.insert(END, "Please get weather data first to see suggestions!")
     
 def get_weather_data_for_suggestions(self):
-    # Convert current weather to SuggestionEngine format
+    #Convert current weather to SuggestionEngine format
     try:
-        if hasattr(self.master, 'forecast') and isinstance(self.master.forecast, dict):
+        # Check both possible weather data locations
+        if hasattr(self.master, 'current_weather_data') and isinstance(self.master.current_weather_data, dict):
+            weather_data = self.master.current_weather_data
             return {
-                'description': self.master.forecast.get('weather', '').lower(),
-                'temperature': self.master.forecast.get('temp', 72),
-                'conditions': self.master.forecast.get('weather', '').lower(),
-                'location': self.master.forecast.get('location', 'Current Location')
+                'description': weather_data.get('weather', '').lower(),
+                'temperature': weather_data.get('temp', 72),
+                'conditions': weather_data.get('weather', '').lower(),
+                'location': weather_data.get('location', 'Current Location')
             }
-    except Exception:
-        pass
+        elif hasattr(self.master, 'forecast') and isinstance(self.master.forecast, dict):
+            weather_data = self.master.forecast
+            return {
+                'description': weather_data.get('weather', '').lower(),
+                'temperature': weather_data.get('temp', 72),
+                'conditions': weather_data.get('weather', '').lower(),
+                'location': weather_data.get('location', 'Current Location')
+            }
+    except Exception as e:
+        print(f"Error getting weather data for suggestions: {e}")
     return None
