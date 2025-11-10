@@ -154,25 +154,39 @@ class Todo_Window(Toplevel):
             self.task_entry.delete(0, END)
             self.update_task_list()
     
-    def update_task_list(self):
+    def update_task_list(self, show_completed=False):
         for widget in self.task_list_frame.winfo_children():
             widget.destroy()
         
-        for task in self.master.task_manager.get_all_tasks():
+        # Filter tasks based on show_completed flag
+        if show_completed:
+            tasks_to_show = self.master.task_manager.get_all_tasks()
+        else:
+            tasks_to_show = self.master.task_manager.get_incomplete_tasks()
+    
+        if not tasks_to_show:
+            # Show appropriate empty message
+            message = "No tasks to display!" if show_completed else "No active tasks - add some above!"
+            empty_frame = Frame(self.task_list_frame, bg='teal')
+            empty_frame.pack(fill="x", pady=10)
+            Label(empty_frame, text=message, 
+              fg="white", bg='teal', font=("Arial", 11, "italic")).pack()
+            return
+    
+        for task in tasks_to_show:
             task_frame = Frame(self.task_list_frame, bg='teal')
             task_frame.pack(fill="x", pady=2)
-            
+        
             status = "✓" if task['completed'] else "○"
             color = "light gray" if task['completed'] else "white"
             task_text = f"{status} {task['description']} ({task['category']})"
-            
-            Label(task_frame, text=task_text, fg=color, bg='teal', 
-                  font=("Arial", 11)).pack(side="left")
-            
+        
+            Label(task_frame, text=task_text, fg=color, bg='teal', font=("Arial", 11)).pack(side="left")
+        
             if not task['completed']:
-                Button(task_frame, text="Complete", 
-                      command=lambda t=task: self.complete_task(t['id']),
-                      font=("Arial", 8)).pack(side="right")
+                Button(task_frame, text="Complete", command=lambda t=task: self.complete_task(t['id']), font=("Arial", 8)).pack(side="right")
+            else:
+                Button(task_frame, text="Delete", command=lambda t=task: self.delete_task(t['id']), font=("Arial", 8), bg="red").pack(side="right")
     
     def complete_task(self, task_id):
         self.master.task_manager.complete_task(task_id)
@@ -250,8 +264,16 @@ class Suggestion_Window(Toplevel):
                     'conditions': self.master.forecast.get('weather', '').lower(),
                     'location': self.master.forecast.get('location', 'Current Location')
                 }
-        except:
-            pass
+            elif hasattr(self.master, 'forecast') and isinstance(self.master.forecast, dict):
+                weather_data = self.master.forecast
+            return {
+                'description': weather_data.get('weather', '').lower(),
+                'temperature': weather_data.get('temp', 72),
+                'conditions': weather_data.get('weather', '').lower(),
+                'location': weather_data.get('location', 'Current Location')
+            }
+        except Exception as e:
+            print(f"Error getting weather data for suggestions: {e}")
         return None
 
 
