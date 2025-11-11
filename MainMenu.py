@@ -1,6 +1,6 @@
 from tkinter import *
 import os
-import Weather
+from Weather import Get_Weather
 from TaskManager import TaskManager
 from SuggestionEngine import SuggestionEngine
 
@@ -16,7 +16,7 @@ class Weather_Main_Window(Tk):
         self.title('WeatherBot')
         self.geometry("800x600")
         self.configure(bg='teal')
-        self.weather = Weather.Get_Weather()
+        self.weather = Get_Weather()
         self.forecast = "No Forecast"
         self.current_weather_data = None
 
