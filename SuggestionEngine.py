@@ -27,8 +27,8 @@ class SuggestionEngine:
 
         return self.suggestions
     
+    # Function will suggest clothing and weather-related advice
     def _add_weather_suggestions(self, conditions, temp, description):
-        # Suggestions based on temperature and conditions
         if temp < 32:
             self.suggestions.append("FREEZING - Bundle up with heavy coat!")
         elif temp < 50:
@@ -59,29 +59,29 @@ class SuggestionEngine:
             self.suggestions.append("Perfect for indoor tasks:")
             for task in indoor_tasks[:2]:
                 self.suggestions.append(f"{task['description']}")
-    
+
+    # Function will suggest activities if no tasks are present
     def _add_general_activity_suggestions(self, conditions, temp):
-        # Add general activity suggestions even when no tasks exist
         self.suggestions.append("Suggested Activities:")
         
         if any(word in conditions for word in ["clear", "sunny", "fair"]):
             if 60 <= temp <= 80:
-                self.suggestions.append("   • Perfect for walking, hiking, or outdoor sports")
-                self.suggestions.append("   • Great day for gardening or yard work")
-                self.suggestions.append("   • Consider a picnic or outdoor dining")
+                self.suggestions.append("   Perfect for walking, hiking, or outdoor sports")
+                self.suggestions.append("   Great day for gardening or yard work")
+                self.suggestions.append("   Consider a picnic or outdoor dining")
             elif temp > 80:
-                self.suggestions.append("   • Good for swimming or water activities")
-                self.suggestions.append("   • Visit air-conditioned spaces like museums")
+                self.suggestions.append("Good for swimming or water activities")
+                self.suggestions.append("Visit air-conditioned spaces like museums")
         
         if any(word in conditions for word in ["rain", "drizzle"]):
-            self.suggestions.append("   • Visit museums, libraries, or indoor shopping")
-            self.suggestions.append("   • Perfect for reading, movies, or indoor hobbies")
-            self.suggestions.append("   • Great day for cooking or baking")
+            self.suggestions.append("   Visit museums, libraries, or indoor shopping")
+            self.suggestions.append("   Perfect for reading, movies, or indoor hobbies")
+            self.suggestions.append("   Great day for cooking or baking")
         
         if any(word in conditions for word in ["snow"]):
-            self.suggestions.append("   • Good for skiing, sledding, or building a snowman")
-            self.suggestions.append("   • Perfect for hot drinks and cozy indoor activities")
+            self.suggestions.append("   Good for skiing, sledding, or building a snowman")
+            self.suggestions.append("   Perfect for hot drinks and cozy indoor activities")
         
         if any(word in conditions for word in ["cloudy", "overcast"]):
-            self.suggestions.append("   • Comfortable for walking or light outdoor work")
-            self.suggestions.append("   • Good day for running errands or shopping")
+            self.suggestions.append("   Comfortable for walking or light outdoor work")
+            self.suggestions.append("   Good day for running errands or shopping")
