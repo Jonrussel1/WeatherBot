@@ -51,7 +51,7 @@ class Get_Weather:
         #Goes through json to get necessary data
         self.coordinate_data = self.get_data_as_json(self.coordinate_endpoint, self.headers)["properties"]
         self.location_data = self.coordinate_data["relativeLocation"]["properties"]
-        self.location = f"{self.location_data["city"]}, {self.location_data["state"]}"
+        self.location = f"{self.location_data['city']}, {self.location_data['state']}"
         
         #Puts data in dict
         self.station__coords_and_location = {"gridId":self.coordinate_data["gridId"], "x":self.coordinate_data["gridX"], "y":self.coordinate_data["gridY"], "location":self.location}
@@ -67,7 +67,7 @@ class Get_Weather:
             dict: Dictionary containing weather, temp, and location
         """
         #Create link
-        self.forecast_endpoint = f"{self.BASE_URL}/gridpoints/{station_and_coords["gridId"]}/{station_and_coords["x"]},{station_and_coords["y"]}/forecast"
+        self.forecast_endpoint = f"{self.BASE_URL}/gridpoints/{station_and_coords['gridId']}/{station_and_coords['x']},{station_and_coords['y']}/forecast"
         
         #Gets necessary data from json (current half of day, either 00-11 or 12-23)
         self.forecast_data = self.get_data_as_json(self.forecast_endpoint, self.headers)["properties"]["periods"][0]
@@ -98,4 +98,5 @@ class Get_Weather:
             self.data = self.forecast_from_gridpoints(self.coords_to_gridpoints(self.coords))
         except:
             return f"Invalid zip code"
+
         return self.data
