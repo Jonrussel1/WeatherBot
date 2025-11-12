@@ -61,7 +61,7 @@ class Weather_Main_Window(Tk):
     def Setting_Button(self):
         # keep the gear icon usage (ensure gear.png exists in the same folder)
         try:
-            self.img = PhotoImage(file=self.basedir + "/gear.png").subsample(3, 3)
+            self.img = PhotoImage(file=self.basedir + "/gear3.png").subsample(3, 3)
         except Exception:
             self.img = None
         self.menu = Menu(self, tearoff=0, bg="red", fg="black")
