@@ -1,4 +1,8 @@
+tasks.json
+__pycache__/Setting_Window.cpython-313.pyc
+__pycache__/Suggestion_Window.cpython-313.pyc
 __pycache__/SuggestionEngine.cpython-313.pyc
 __pycache__/TaskManager.cpython-313.pyc
+__pycache__/Todo_Window.cpython-313.pyc
+__pycache__/Weather_Window.cpython-313.pyc
 __pycache__/Weather.cpython-313.pyc
-tasks.json
