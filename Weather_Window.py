@@ -23,7 +23,7 @@ class Weather_Window(Toplevel):
 
         self.subtitle_label = Label(
             self.header,
-            text='Search by ZIP or "lat, lon" to see current conditions',
+            text='Search by ZIP to see current conditions',
             font=('Helvetica', 12),
             fg='#e0f2f1', bg='teal'
         )
@@ -69,7 +69,7 @@ class Weather_Window(Toplevel):
         self.search_wrap.pack(fill="x", padx=2, pady=2)
 
         self.search_var = StringVar()
-        placeholder = "Enter ZIP or coordinates (lat, lon)"
+        placeholder = "Enter ZIP code..."
 
         self.search_entry = Entry(
             self.search_wrap, textvariable=self.search_var,
@@ -152,7 +152,7 @@ class Weather_Window(Toplevel):
     def _do_search(self):
         query = self.search_var.get().strip() if hasattr(self, 'search_var') else ""
         if not query or "Enter ZIP" in query:
-            self._set_status("Type a ZIP or coordinates first.")
+            self._set_status("Type a ZIP first.")
             return
 
         try:
