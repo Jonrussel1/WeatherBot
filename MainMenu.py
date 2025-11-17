@@ -8,6 +8,8 @@ from Suggestion_Window import Suggestion_Window
 from Todo_Window import Todo_Window
 from Weather_Window import Weather_Window
 from PIL import Image, ImageTk
+import tkinter.font as tkFont
+import pyglet as pg
 
 #class approach calls window by organizing data in a class...
 class Weather_Main_Window(Tk):
@@ -19,29 +21,32 @@ class Weather_Main_Window(Tk):
 
         #title, icon, size
         self.title('WeatherBot')
-        self.geometry("800x600")
+        self.geometry('3840x2160')
+        self.config()
    
         
         self.weather = Get_Weather()
         self.forecast = "No Forecast"
         self.current_weather_data = None
 
-        #initialize suggestion engine and task manager
         self.suggestion_engine = SuggestionEngine() 
         self.task_manager = TaskManager()
    
-
-          
-
-
-    
-
-        #label
-        self.my_label = Label(self, text='Welcome to WeatherBot')
-        self.my_label.config(font=("Helvetica", 46, "bold"), fg="dark blue")
+        self.cf = pg.font.add_file('anda.ttf')
+        self.my_label = Label(self, text='Welcome to WeatherBot') 
+        self.my_label.config(font=("cf", 46, "bold"))
+        self.my_label.pack(pady=10)
         
-        self.my_label.config(highlightthickness=3, padx=4, pady=2)
-        self.my_label.pack(pady=20)
+    
+        
+
+
+       
+        
+      
+
+        
+
         
 
         self.Suggestion_button()
@@ -56,17 +61,16 @@ class Weather_Main_Window(Tk):
         self.my_label.lift()
         self.suggest_button.lift()
         self.setting_button.lift()
+      
         self.todo_button.lift()
         self.weather_button.lift()
         self.exit_button.lift()
     
-        
+    #image for background...
     def background_image(self):
         self.imgzero = Image.open("clouds0.png")
-        self.imgresize = self.imgzero.resize((800,600))
-            
+        self.imgresize = self.imgzero.resize((3840,2160))
         self.img = ImageTk.PhotoImage(self.imgresize)
-            
         self.labelzero = Label(image=self.img).place(x=0, y=0)
    
          
@@ -93,12 +97,12 @@ class Weather_Main_Window(Tk):
     def Setting_Button(self):
         # keep the gear icon usage (ensure gear.png exists in the same folder)
         try:
-            self.img = PhotoImage(file=self.basedir + "/gear3.png").subsample(3, 3)
+            self.sett_img = PhotoImage(file=self.basedir + "/gear3.png").subsample(3, 3)
         except Exception:
-            self.img = None
+            self.sett_img = None
         self.menu = Menu(self, tearoff=0, bg="red", fg="black")
-        self.setting_button = Button(self, image=self.img, bd=0, relief="flat", highlightthickness=0,
-                                     bg="teal", activebackground="teal", command=self.Open_Settings_Window)
+        self.setting_button = Button(self, image=self.sett_img, bd=0, relief="flat", highlightthickness=0,
+                                     bg="light grey", activebackground="light grey", command=self.Open_Settings_Window)
         self.setting_button.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
 
     def Get_Weather(self, coords):
