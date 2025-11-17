@@ -26,6 +26,7 @@ class Suggestion_Window(Toplevel):
 
     def refresh_suggestions(self):
         #Refresh suggestions based on current weather and tasks
+        self.suggestions_text.config(state='normal')
         self.suggestions_text.delete(1.0, END)
 
         # Get current weather data for suggestions
@@ -43,6 +44,8 @@ class Suggestion_Window(Toplevel):
                 self.suggestions_text.insert(END, "Get weather data and add tasks to see personalized suggestions!")
         else:
             self.suggestions_text.insert(END, "Please get weather data first to see suggestions!")
+
+        self.suggestions_text.config(state='disabled')
 
     def get_weather_data_for_suggestions(self):
         #Convert current weather to SuggestionEngine format
