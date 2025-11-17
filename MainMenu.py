@@ -7,6 +7,7 @@ from Setting_Window import Setting_Window
 from Suggestion_Window import Suggestion_Window
 from Todo_Window import Todo_Window
 from Weather_Window import Weather_Window
+from PIL import Image, ImageTk
 
 #class approach calls window by organizing data in a class...
 class Weather_Main_Window(Tk):
@@ -19,7 +20,8 @@ class Weather_Main_Window(Tk):
         #title, icon, size
         self.title('WeatherBot')
         self.geometry("800x600")
-        self.configure(bg='teal')
+   
+        
         self.weather = Get_Weather()
         self.forecast = "No Forecast"
         self.current_weather_data = None
@@ -27,22 +29,52 @@ class Weather_Main_Window(Tk):
         #initialize suggestion engine and task manager
         self.suggestion_engine = SuggestionEngine() 
         self.task_manager = TaskManager()
+   
+
+          
+
+
+    
 
         #label
-        self.my_label = Label(self, text='Welcome to WeatherBot', font=('Helvetica', 42))
-        self.my_label.config(font=("Helvetica", 36, "bold"), fg="white", bg=self["bg"])
+        self.my_label = Label(self, text='Welcome to WeatherBot')
+        self.my_label.config(font=("Helvetica", 46, "bold"), fg="dark blue")
+        
         self.my_label.config(highlightthickness=3, padx=4, pady=2)
         self.my_label.pack(pady=20)
+        
+
         self.Suggestion_button()
         self.Setting_Button()
-        self.Todo_Button()
+        self.Todo_Button()  
+        
         self.Weather_Button()
+      
         self.Exit_button()
+        
+        self.background_image()
+        self.my_label.lift()
+        self.suggest_button.lift()
+        self.setting_button.lift()
+        self.todo_button.lift()
+        self.weather_button.lift()
+        self.exit_button.lift()
     
+        
+    def background_image(self):
+        self.imgzero = Image.open("clouds0.png")
+        self.imgresize = self.imgzero.resize((800,600))
+            
+        self.img = ImageTk.PhotoImage(self.imgresize)
+            
+        self.labelzero = Label(image=self.img).place(x=0, y=0)
+   
+         
     
     def Weather_Button(self):
         self.weather_button = Button(self, text="Get Weather Info", command=self.Open_Weather_Window, bg="#333", fg="white", bd=0)
         self.weather_button.pack(pady=16)
+        
         self.weather_button.configure(
             font=("Helvetica", 14, "bold"),
             bg="#0ea5e9", fg="white",
@@ -53,7 +85,7 @@ class Weather_Main_Window(Tk):
         # cool hover effect (using in all buttons why not)
         self.weather_button.bind("<Enter>", lambda e: e.widget.configure(bg="#0284c7"))
         self.weather_button.bind("<Leave>", lambda e: e.widget.configure(bg="#0ea5e9"))
-
+        
     def Todo_Button(self):
         self.todo_button = Button(self, text='To Do List', command=self.Open_ToDo_Window, bg='#333',fg='white',bd=0)
         self.todo_button.pack(pady=50)
@@ -95,6 +127,8 @@ class Weather_Main_Window(Tk):
         )
         self.exit_button.bind("<Enter>", lambda e: e.widget.configure(bg="#dc2626"))
         self.exit_button.bind("<Leave>", lambda e: e.widget.configure(bg="#ef4444"))
+    
+    
 
     def Open_Weather_Window(self):
         Weather_Window(self)
@@ -107,6 +141,8 @@ class Weather_Main_Window(Tk):
 
     def Open_Suggestion_Window(self):
         Suggestion_Window(self)
+
+            
 
 #instantiation
 app = Weather_Main_Window()
