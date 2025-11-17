@@ -33,9 +33,9 @@ class Weather_Main_Window(Tk):
         self.task_manager = TaskManager()
    
         self.cf = pg.font.add_file('anda.ttf')
-        self.my_label = Label(self, text='Welcome to WeatherBot') 
-        self.my_label.config(font=("cf", 100, "bold"))
-        self.my_label.pack(pady=150)
+        self.my_label = Label(self, text='Welcome to WeatherBot',bg='#8dbbdc', borderwidth=100) 
+        self.my_label.config(font=(self.cf, 100, "bold"))
+        self.my_label.pack(pady=100)
         
     
         
