@@ -32,23 +32,11 @@ class Weather_Main_Window(Tk):
         self.suggestion_engine = SuggestionEngine() 
         self.task_manager = TaskManager()
    
-        self.cf = pg.font.add_file('anda.ttf')
+        self.cf = pg.font.add_file(self.basedir + '/anda.ttf')
         self.my_label = Label(self, text='Welcome to WeatherBot',bg='#8dbbdc', borderwidth=100) 
         self.my_label.config(font=(self.cf, 100, "bold"))
         self.my_label.pack(pady=100)
         
-    
-        
-
-
-       
-        
-      
-
-        
-
-        
-
         self.Weather_Button()
         self.Setting_Button()
         self.Todo_Button()  
@@ -68,7 +56,7 @@ class Weather_Main_Window(Tk):
     
     #image for background...
     def background_image(self):
-        self.imgzero = Image.open("clouds0.png")
+        self.imgzero = Image.open(self.basedir+"/clouds0.png")
         self.imgresize = self.imgzero.resize((3840,2160))
         self.img = ImageTk.PhotoImage(self.imgresize)
         self.labelzero = Label(image=self.img).place(x=0, y=0)
