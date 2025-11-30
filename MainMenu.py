@@ -69,11 +69,10 @@ class Weather_Main_Window(Tk):
         self.weather_button.pack(pady=20)
         
         self.weather_button.configure(
-            font=("Helvetica", 18, "bold"),
+            font=("Helvetica", 46, "bold"),
             bg="#8dbbdc", fg="#f8fbff",
-            activebackground="#6fa8cc", activeforeground="#f8fbff",
-            bd=0, relief="flat", padx=24, pady=14, cursor="hand2",
-            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#cfeaf8"
+            activebackground="#6fa8cc", activeforeground="#f8fbff", relief="flat", padx=24, pady=14, cursor="hand2",
+            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#cfeaf8", width=13
         )
         # soft hover effect
         self.weather_button.bind("<Enter>", lambda e: e.widget.configure(bg="#6fa8cc"))
@@ -85,11 +84,11 @@ class Weather_Main_Window(Tk):
         self.todo_button.pack(pady=20)
 
         self.todo_button.configure(
-            font=("Helvetica", 14, "bold"),
+            font=("Helvetica", 46, "bold"),
             bg="#a7c7e7", fg="#1f2b33",
             activebackground="#90b8dd", activeforeground="#1f2b33",
             bd=0, relief="flat", padx=24, pady=14, cursor="hand2",
-            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#d9e9f6"
+            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#d9e9f6",width=13
         )
         # soft hover effect
         self.todo_button.bind("<Enter>", lambda e: e.widget.configure(bg="#90b8dd"))
@@ -123,11 +122,11 @@ class Weather_Main_Window(Tk):
         self.suggest_button.pack(pady=20)
 
         self.suggest_button.configure(
-            font=("Helvetica", 14, "bold"),
+            font=("Helvetica", 46, "bold"),
             bg="#a7c7e7", fg="#1f2b33",
             activebackground="#90b8dd", activeforeground="#1f2b33",
             bd=0, relief="flat", padx=24, pady=14, cursor="hand2",
-            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#d9e9f6"
+            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#d9e9f6",width=13
         )
         # soft hover effect
         self.suggest_button.bind("<Enter>", lambda e: e.widget.configure(bg="#90b8dd"))
@@ -138,11 +137,11 @@ class Weather_Main_Window(Tk):
         self.exit_button = Button(self, text='Exit', command=self.destroy, bg='#6c7a89', fg='#f8fbff', bd=0)
         self.exit_button.pack(pady=20)  # redid packing it was sitting behind png icon
         self.exit_button.configure(
-            font=("Helvetica", 14, "bold"),
+            font=("Helvetica", 46, "bold"),
             bg="#6c7a89", fg="#f8fbff",
             activebackground="#55656f", activeforeground="#f8fbff",
             bd=0, relief="flat", padx=24, pady=14, cursor="hand2",
-            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#c6d3de"
+            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#c6d3de",width=13
         )
         self.exit_button.bind("<Enter>", lambda e: e.widget.configure(bg="#55656f"))
         self.exit_button.bind("<Leave>", lambda e: e.widget.configure(bg="#6c7a89"))
