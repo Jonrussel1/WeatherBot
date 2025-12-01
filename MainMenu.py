@@ -21,7 +21,7 @@ class Weather_Main_Window(Tk):
 
         #title, icon, size
         self.title('WeatherBot')
-        self.geometry('3840x2160')
+        self.geometry('3000x2000')
         self.config()
    
         
@@ -32,10 +32,11 @@ class Weather_Main_Window(Tk):
         self.suggestion_engine = SuggestionEngine() 
         self.task_manager = TaskManager()
    
+        
+        self.my_label = Label(self, text='Welcome to WeatherBot', bg='#8dbbdc') 
         self.cf = pg.font.add_file(self.basedir + '/anda.ttf')
-        self.my_label = Label(self, text='Welcome to WeatherBot',bg='#8dbbdc', borderwidth=100) 
-        self.my_label.config(font=(self.cf, 100, "bold"))
-        self.my_label.pack(pady=100)
+        self.my_label.config(font=(self.cf, 100, "bold"), width=27, height=2, bd=15, bg="#a7c7e7", relief="solid")
+        self.my_label.pack(pady=60)
         
         self.Weather_Button()
         self.Setting_Button()
@@ -57,12 +58,22 @@ class Weather_Main_Window(Tk):
     #image for background...
     def background_image(self):
         self.imgzero = Image.open(self.basedir+"/clouds0.png")
-        self.imgresize = self.imgzero.resize((3840,2160))
+        self.imgresize = self.imgzero.resize((3000,2000))
         self.img = ImageTk.PhotoImage(self.imgresize)
         self.labelzero = Label(image=self.img).place(x=0, y=0)
-   
-         
+
     
+    #calls weather api to get weather data...
+    def Get_Weather(self, coords):
+        try:
+            self.forecast = self.weather.get_weather(coords)
+            self.current_weather_data = self.forecast
+            return f"Current Weather: {self.forecast['weather'].title()} | Temperature: {self.forecast['temp']} | Location: {self.forecast['location']}"
+        except:
+            self.current_weather_data = None
+            return "Invalid coordinates or weather data unavailable."
+        
+
     def Weather_Button(self):
         # weather button bigger (larger font + larger padding)
         self.weather_button = Button(self, text="Get Weather Info", command=self.Open_Weather_Window, bg="#8dbbdc", fg="#f8fbff", bd=0)
@@ -70,9 +81,10 @@ class Weather_Main_Window(Tk):
         
         self.weather_button.configure(
             font=("Helvetica", 46, "bold"),
-            bg="#8dbbdc", fg="#f8fbff",
-            activebackground="#6fa8cc", activeforeground="#f8fbff", relief="flat", padx=24, pady=14, cursor="hand2",
-            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#cfeaf8", width=13
+            bg="#8dbbdc", fg="#1f2b33",
+            activebackground="#6fa8cc", activeforeground="#f8fbff", padx=24, pady=14, cursor="hand2",
+            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#cfeaf8",
+            width=13, bd=20, relief="raised"
         )
         # soft hover effect
         self.weather_button.bind("<Enter>", lambda e: e.widget.configure(bg="#6fa8cc"))
@@ -87,7 +99,7 @@ class Weather_Main_Window(Tk):
             font=("Helvetica", 46, "bold"),
             bg="#a7c7e7", fg="#1f2b33",
             activebackground="#90b8dd", activeforeground="#1f2b33",
-            bd=0, relief="flat", padx=24, pady=14, cursor="hand2",
+            bd=20, relief="raised", padx=24, pady=14, cursor="hand2",
             highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#d9e9f6",width=13
         )
         # soft hover effect
@@ -97,25 +109,16 @@ class Weather_Main_Window(Tk):
     def Setting_Button(self):
         # keep the gear icon usage (ensure gear.png exists in the same folder)
         try:
-            self.sett_img = PhotoImage(file=self.basedir + "/gear3.png").subsample(3, 3)
+            self.sett_img = PhotoImage(file=self.basedir + "/gear3.png")
         except Exception:
             self.sett_img = None
-        self.menu = Menu(self, tearoff=0, bg="red", fg="black")
-        # neutral light background that matches misty palette
-        self.setting_button = Button(self, image=self.sett_img, bd=0, relief="flat", highlightthickness=0,
-                                     bg="#e0e7eb", activebackground="#e0e7eb", command=self.Open_Settings_Window)
-        self.setting_button.place(relx=1.0, rely=1.0, x=-10, y=-10, anchor="se")
-
-    def Get_Weather(self, coords):
-        try:
-            self.forecast = self.weather.get_weather(coords)
-            self.current_weather_data = self.forecast
-            return f"Current Weather: {self.forecast['weather'].title()} | Temperature: {self.forecast['temp']} | Location: {self.forecast['location']}"
-        except:
-            self.current_weather_data = None
-            return "Invalid coordinates or weather data unavailable."
         
-    
+        self.setting_button = Button(self, image=self.sett_img, command=self.Open_Settings_Window)
+        self.setting_button.config(bg="#a7c7e7", bd=20)
+        self.setting_button.place(relx=1.0, rely=1.0, anchor='se', x=-50, y=-140)
+
+        
+        
     def Suggestion_button(self):
         # even padding for all secondary buttons
         self.suggest_button = Button(self, text='Suggestions', command=self.Open_Suggestion_Window, bg='#a7c7e7', fg='#1f2b33', bd=0)
@@ -125,7 +128,7 @@ class Weather_Main_Window(Tk):
             font=("Helvetica", 46, "bold"),
             bg="#a7c7e7", fg="#1f2b33",
             activebackground="#90b8dd", activeforeground="#1f2b33",
-            bd=0, relief="flat", padx=24, pady=14, cursor="hand2",
+            bd=20, relief="raised", padx=24, pady=14, cursor="hand2",
             highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#d9e9f6",width=13
         )
         # soft hover effect
@@ -140,12 +143,11 @@ class Weather_Main_Window(Tk):
             font=("Helvetica", 46, "bold"),
             bg="#6c7a89", fg="#f8fbff",
             activebackground="#55656f", activeforeground="#f8fbff",
-            bd=0, relief="flat", padx=24, pady=14, cursor="hand2",
+            bd=20, relief="raised", padx=24, pady=14, cursor="hand2",
             highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#c6d3de",width=13
         )
         self.exit_button.bind("<Enter>", lambda e: e.widget.configure(bg="#55656f"))
         self.exit_button.bind("<Leave>", lambda e: e.widget.configure(bg="#6c7a89"))
-    
     
 
     def Open_Weather_Window(self):
