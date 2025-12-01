@@ -35,7 +35,7 @@ class Weather_Main_Window(Tk):
         
         self.my_label = Label(self, text='Welcome to WeatherBot', bg='#8dbbdc') 
         self.cf = pg.font.add_file(self.basedir + '/anda.ttf')
-        self.my_label.config(font=(self.cf, 100, "bold"), width=27, height=2, bd=15, bg="#a7c7e7", relief="solid")
+        self.my_label.configure(font=(self.cf, 100, "bold"), width=27, height=2, bd=10, background="#a7c7e7", relief="solid")
         self.my_label.pack(pady=60)
         
         self.Weather_Button()
@@ -114,7 +114,7 @@ class Weather_Main_Window(Tk):
             self.sett_img = None
         
         self.setting_button = Button(self, image=self.sett_img, command=self.Open_Settings_Window)
-        self.setting_button.config(bg="#a7c7e7", bd=20)
+        self.setting_button.configure(bg="#a7c7e7", bd=20)
         self.setting_button.place(relx=1.0, rely=1.0, anchor='se', x=-50, y=-140)
 
         
