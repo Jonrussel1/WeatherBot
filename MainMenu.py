@@ -21,7 +21,7 @@ class Weather_Main_Window(Tk):
 
         #title, icon, size
         self.title('WeatherBot')
-        self.geometry('3000x2000')
+        self.geometry('2890x1850')
         self.config()
    
         
@@ -36,7 +36,7 @@ class Weather_Main_Window(Tk):
         self.my_label = Label(self, text='Welcome to WeatherBot', bg='#8dbbdc') 
         self.cf = pg.font.add_file(self.basedir + '/anda.ttf')
         self.my_label.configure(font=(self.cf, 100, "bold"), width=27, height=2, bd=10, background="#a7c7e7", relief="solid")
-        self.my_label.pack(pady=60)
+        self.my_label.pack(pady=150)
         
         self.Weather_Button()
         self.Setting_Button()
@@ -58,7 +58,7 @@ class Weather_Main_Window(Tk):
     #image for background...
     def background_image(self):
         self.imgzero = Image.open(self.basedir+"/clouds0.png")
-        self.imgresize = self.imgzero.resize((3000,2000))
+        self.imgresize = self.imgzero.resize((2890,1850))
         self.img = ImageTk.PhotoImage(self.imgresize)
         self.labelzero = Label(image=self.img).place(x=0, y=0)
 
@@ -76,15 +76,15 @@ class Weather_Main_Window(Tk):
 
     def Weather_Button(self):
         # weather button bigger (larger font + larger padding)
-        self.weather_button = Button(self, text="Get Weather Info", command=self.Open_Weather_Window, bg="#8dbbdc", fg="#f8fbff", bd=0)
-        self.weather_button.pack(pady=20)
+        self.weather_button = Button(self, text="Get Weather", command=self.Open_Weather_Window, bg="#8dbbdc", fg="#f8fbff", bd=0)
+        self.weather_button.pack(pady=10)
         
         self.weather_button.configure(
-            font=("Helvetica", 46, "bold"),
+            font=("Ariel", 46, "bold"),
             bg="#8dbbdc", fg="#1f2b33",
             activebackground="#6fa8cc", activeforeground="#f8fbff", padx=24, pady=14, cursor="hand2",
             highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#cfeaf8",
-            width=13, bd=20, relief="raised"
+            width=9,height=1, bd=25, relief="raised"
         )
         # soft hover effect
         self.weather_button.bind("<Enter>", lambda e: e.widget.configure(bg="#6fa8cc"))
@@ -92,44 +92,31 @@ class Weather_Main_Window(Tk):
         
     def Todo_Button(self):
         # even padding for all secondary buttons
-        self.todo_button = Button(self, text='To Do List', command=self.Open_ToDo_Window, bg='#a7c7e7', fg='#1f2b33', bd=0)
-        self.todo_button.pack(pady=20)
+        self.todo_button = Button(self, text='My Tasks', command=self.Open_ToDo_Window, bg='#a7c7e7', fg='#1f2b33', bd=0)
+        self.todo_button.pack(pady=10)
 
         self.todo_button.configure(
-            font=("Helvetica", 46, "bold"),
+            font=("Ariel", 46, "bold"),
             bg="#a7c7e7", fg="#1f2b33",
             activebackground="#90b8dd", activeforeground="#1f2b33",
-            bd=20, relief="raised", padx=24, pady=14, cursor="hand2",
-            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#d9e9f6",width=13
+            bd=25, relief="raised", padx=24, pady=14, cursor="hand2",
+            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#d9e9f6",width=9, height=1
         )
         # soft hover effect
         self.todo_button.bind("<Enter>", lambda e: e.widget.configure(bg="#90b8dd"))
         self.todo_button.bind("<Leave>", lambda e: e.widget.configure(bg="#a7c7e7"))
-    
-    def Setting_Button(self):
-        # keep the gear icon usage (ensure gear.png exists in the same folder)
-        try:
-            self.sett_img = PhotoImage(file=self.basedir + "/gear3.png")
-        except Exception:
-            self.sett_img = None
-        
-        self.setting_button = Button(self, image=self.sett_img, command=self.Open_Settings_Window)
-        self.setting_button.configure(bg="#a7c7e7", bd=20)
-        self.setting_button.place(relx=1.0, rely=1.0, anchor='se', x=-50, y=-140)
-
-        
         
     def Suggestion_button(self):
         # even padding for all secondary buttons
-        self.suggest_button = Button(self, text='Suggestions', command=self.Open_Suggestion_Window, bg='#a7c7e7', fg='#1f2b33', bd=0)
-        self.suggest_button.pack(pady=20)
+        self.suggest_button = Button(self, text='Advice', command=self.Open_Suggestion_Window, bg='#a7c7e7', fg='#1f2b33', bd=0)
+        self.suggest_button.pack(pady=10)
 
         self.suggest_button.configure(
-            font=("Helvetica", 46, "bold"),
+            font=("Ariel", 46, "bold"),
             bg="#a7c7e7", fg="#1f2b33",
             activebackground="#90b8dd", activeforeground="#1f2b33",
-            bd=20, relief="raised", padx=24, pady=14, cursor="hand2",
-            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#d9e9f6",width=13
+            bd=25, relief="raised", padx=24, pady=14, cursor="hand2",
+            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#d9e9f6",width=9,height=1
         )
         # soft hover effect
         self.suggest_button.bind("<Enter>", lambda e: e.widget.configure(bg="#90b8dd"))
@@ -138,16 +125,28 @@ class Weather_Main_Window(Tk):
     def Exit_button(self):
         # even padding for all secondary buttons
         self.exit_button = Button(self, text='Exit', command=self.destroy, bg='#6c7a89', fg='#f8fbff', bd=0)
-        self.exit_button.pack(pady=20)  # redid packing it was sitting behind png icon
+        self.exit_button.pack(pady=10)  # redid packing it was sitting behind png icon
         self.exit_button.configure(
-            font=("Helvetica", 46, "bold"),
+            font=("Ariel", 46, "bold"),
             bg="#6c7a89", fg="#f8fbff",
             activebackground="#55656f", activeforeground="#f8fbff",
-            bd=20, relief="raised", padx=24, pady=14, cursor="hand2",
-            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#c6d3de",width=13
+            bd=25, relief="raised", padx=24, pady=14, cursor="hand2",
+            highlightthickness=2, highlightbackground=self["bg"], highlightcolor="#c6d3de",width=9,height=1
         )
         self.exit_button.bind("<Enter>", lambda e: e.widget.configure(bg="#55656f"))
         self.exit_button.bind("<Leave>", lambda e: e.widget.configure(bg="#6c7a89"))
+
+    def Setting_Button(self):
+        
+        try:
+            self.sett_img = PhotoImage(file=self.basedir + "/gear3.png").subsample(1,1)
+        except Exception:
+            self.sett_img = None
+        
+        self.setting_button = Button(self, image=self.sett_img, command=self.Open_Settings_Window)
+        self.setting_button.configure(bg="#a7c7e7", bd=20)
+        self.setting_button.place(relx=1.0, rely=1.0, anchor='se', x=-20, y=-100)
+
     
 
     def Open_Weather_Window(self):
