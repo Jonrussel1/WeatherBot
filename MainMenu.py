@@ -21,6 +21,8 @@ class Weather_Main_Window(Tk):
 
         #title, icon, size
         self.title('WeatherBot')
+        self.winfo_screenwidth()
+        self.winfo_screenheight()
         self.geometry('2800x1800')
         self.config()
    
