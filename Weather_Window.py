@@ -123,7 +123,7 @@ class Weather_Window(Toplevel):
 
         # Location
         self.loc_label = Label(
-            self.card_inner, text="Location —",
+            self.card_inner, text="Location Unknown",
             font=("Helvetica", 48, "bold"),
             fg="#ecfeff", bg="#192745", width=18
         )
@@ -131,7 +131,7 @@ class Weather_Window(Toplevel):
 
         # Temperature big
         self.temp_label = Label(
-            self.card_inner, text="— °",
+            self.card_inner, text="Unknown",
             font=("Helvetica", 48, "bold"),
             fg="#ecfeff", bg="#192745", width=18
         )
@@ -141,7 +141,7 @@ class Weather_Window(Toplevel):
         self.cond_wrap = Frame(self.card_inner, bg="#39dcf9")
         self.cond_wrap.pack(anchor="w", pady=(0, 10))
         self.cond_pill = Label(
-            self.cond_wrap, text="—",
+            self.cond_wrap, text="Unknown",
             font=("Helvetica", 48, "bold"),
             fg="#100b3f", bg="#5f9c9d",
             padx=10, pady=4
