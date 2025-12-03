@@ -32,6 +32,7 @@ class Weather_Main_Window(Tk):
             resolution=0.5,   # Step size
            length=200
         )   
+        self.rescale.pack()
             
         
         self.weather = Get_Weather()
