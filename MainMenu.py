@@ -21,7 +21,7 @@ class Weather_Main_Window(Tk):
 
         #title, icon, size
         self.title('WeatherBot')
-        self.geometry('2890x1850')
+        self.geometry('2800x1800')
         self.config()
    
         
@@ -36,7 +36,7 @@ class Weather_Main_Window(Tk):
         self.my_label = Label(self, text='Welcome to WeatherBot', bg='#8dbbdc') 
         self.cf = pg.font.add_file(self.basedir + '/anda.ttf')
         self.my_label.configure(font=(self.cf, 100, "bold"), width=27, height=2, bd=10, background="#a7c7e7", relief="solid")
-        self.my_label.pack(pady=150)
+        self.my_label.pack(pady=100)
         
         self.Weather_Button()
         self.Setting_Button()
@@ -58,7 +58,7 @@ class Weather_Main_Window(Tk):
     #image for background...
     def background_image(self):
         self.imgzero = Image.open(self.basedir+"/clouds0.png")
-        self.imgresize = self.imgzero.resize((2890,1850))
+        self.imgresize = self.imgzero.resize((2800,1800))
         self.img = ImageTk.PhotoImage(self.imgresize)
         self.labelzero = Label(image=self.img).place(x=0, y=0)
 
