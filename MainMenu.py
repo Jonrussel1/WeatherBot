@@ -21,11 +21,18 @@ class Weather_Main_Window(Tk):
 
         #title, icon, size
         self.title('WeatherBot')
-        self.winfo_screenwidth()
-        self.winfo_screenheight()
+        
         self.geometry('2800x1800')
         self.config()
-   
+        self.rescale = Scale(
+    
+            from_=0,          # Minimum value
+            to=100,           # Maximum value
+            orient="horizontal",
+            resolution=0.5,   # Step size
+           length=200
+        )   
+            
         
         self.weather = Get_Weather()
         self.forecast = "No Forecast"
