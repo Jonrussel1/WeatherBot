@@ -1,5 +1,6 @@
 from tkinter import *
 import os
+import sys
 from Weather import Get_Weather
 from TaskManager import TaskManager
 from SuggestionEngine import SuggestionEngine
@@ -17,7 +18,6 @@ class Weather_Main_Window(Tk):
     def __init__(self):
         super().__init__()
         # to get the location of the current python file
-        self.basedir = os.path.dirname(os.path.abspath(__file__))
 
         #title, icon, size
         self.title('WeatherBot')
@@ -36,7 +36,7 @@ class Weather_Main_Window(Tk):
    
         
         self.my_label = Label(self, text='Welcome to WeatherBot', bg='#8dbbdc') 
-        self.cf = pg.font.add_file(self.basedir + '/anda.ttf')
+        self.cf = pg.font.add_file(self.resource_path('anda.ttf'))
         self.my_label.configure(font=(self.cf, 80, "bold"), width=30, height=2, bd=10, bg="#a8c2dd")
         self.my_label.pack(pady=35)
         
@@ -59,11 +59,18 @@ class Weather_Main_Window(Tk):
     
     #image for background...
     def background_image(self):
-        self.imgzero = Image.open(self.basedir+"/clouds0.png")
+        self.imgzero = Image.open(self.resource_path("clouds0.png"))
         self.imgresize = self.imgzero.resize((1920,1080))
         self.img = ImageTk.PhotoImage(self.imgresize)
         self.labelzero = Label(image=self.img).place(x=0, y=0)
 
+    def resource_path(self, relative_path):
+        try:
+            self.base_path = sys._MEIPASS
+        except Exception:
+            self.base_path = os.path.abspath(".")
+        return os.path.join(self.base_path, relative_path)    
+        
     
     #calls weather api to get weather data...
     def Get_Weather(self, coords):
@@ -141,7 +148,7 @@ class Weather_Main_Window(Tk):
     def Setting_Button(self):
         
         try:
-            self.sett_img = PhotoImage(file=self.basedir + "/gear3.png").subsample(2,2)
+            self.sett_img = PhotoImage(file=self.resource_path("gear3.png")).subsample(2,2)
         except Exception:
             self.sett_img = None
         
