@@ -3,3 +3,4 @@ src/__pycache__/*.pyc
 build/*
 dist/MainMenu/*
 Weatherbot.egg-info
+dist/*
