@@ -9,17 +9,17 @@ class Suggestion_Window(Toplevel):
 
         #title, icon, size
         self.title('Smart Suggestions')
-        self.geometry("700x500")
-        self.configure(bg='teal')
+        self.geometry("1440x1024")
+        self.configure(background="#678bb0")
 
-        Label(self, text="Smart Suggestions", font=('Helvetica', 20), bg='teal', fg='white').pack(pady=20)
+        Label(self, text="Smart Suggestions", font=('Helvetica', 54), width=35, bg="#c6d9ed", fg="#1f2b33").pack(pady=60)
 
         # Suggestions display
-        self.suggestions_text = Text(self, wrap=WORD, width=60, height=15, font=("Arial", 12), bg='lightcyan')
-        self.suggestions_text.pack(pady=10, padx=20, fill=BOTH, expand=True)
+        self.suggestions_text = Text(self, wrap=WORD, width=100, height=8, font=("Helvetica", 44), bg="#fbfbfb")
+        self.suggestions_text.pack(pady=30, padx=10, fill='x')
 
         # Refresh button
-        Button(self, text="Refresh Suggestions", command=self.refresh_suggestions,font=("Arial", 12), bg='#00a0a0', fg='white').pack(pady=10)
+        Button(self, text="Refresh Suggestions", command=self.refresh_suggestions,font=("Helvetica", 46), bg="#4b7e8f", fg="#ffffff",bd=35).pack(pady=5)
 
         # Load initial suggestions
         self.refresh_suggestions()
