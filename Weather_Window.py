@@ -7,7 +7,10 @@ class Weather_Window(Toplevel):
 
         # window styling
         self.title('Weather information')
-        self.geometry("2500x1300")
+        self.an = self.winfo_screenwidth()
+        self.al = self.winfo_screenheight()
+        self.tam = '%dx%d'%(self.an,self.al)
+        self.geometry(self.tam)
         self.configure(bg="#5d7fa1")
 
         # --- Header ---

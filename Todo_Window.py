@@ -9,7 +9,10 @@ class Todo_Window(Toplevel):
 
         #title, icon, size
         self.title('Task Manager')
-        self.geometry("2500x1450")
+        self.an = self.winfo_screenwidth()
+        self.al = self.winfo_screenheight()
+        self.tam = '%dx%d'%(self.an,self.al)
+        self.geometry(self.tam)
         self.configure(background="#678bb0")
 
         #Task input frame includes radio and task buttons

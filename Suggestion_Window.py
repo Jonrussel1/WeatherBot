@@ -9,7 +9,10 @@ class Suggestion_Window(Toplevel):
 
         #title, icon, size
         self.title('Smart Suggestions')
-        self.geometry("2500x1300")
+        self.an = self.winfo_screenwidth()
+        self.al = self.winfo_screenheight()
+        self.tam = '%dx%d'%(self.an,self.al)
+        self.geometry(self.tam)
         self.configure(background="#678bb0")
 
         Label(self, text="Smart Suggestions", font=('Helvetica', 54), width=30, bg="#c6d9ed", fg="#1f2b33").pack(pady=20)
