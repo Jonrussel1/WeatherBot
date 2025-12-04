@@ -7,7 +7,7 @@ class Weather_Window(Toplevel):
 
         # window styling
         self.title('Weather information')
-        self.geometry("2500x1300")
+        self.geometry("1440x1024")
         self.configure(bg="#5d7fa1")
 
         # --- Header ---
@@ -16,7 +16,7 @@ class Weather_Window(Toplevel):
 
         self.title_label = Label(
             self.header, text='Weather Info',
-            font=('Helvetica', 56, 'bold'),
+            font=('Helvetica', 64, 'bold'),
             bg="#deeeff", fg="#1f2b33",height=2
         )
         self.title_label.pack()
@@ -34,7 +34,7 @@ class Weather_Window(Toplevel):
         self.content.pack(fill="both", expand=True, padx=24, pady=12)
 
         self.left = Frame(self.content, bg="#ecf3fb")
-        self.left.pack(side='left', fill='y', padx=(12, 12))
+        self.left.pack(side='left', fill='y', padx=(9, 9))
 
         self.right = Frame(self.content, bg="#466d93")
         self.right.pack(side='right', fill='both', expand=True, padx=(15, 0))
@@ -62,7 +62,7 @@ class Weather_Window(Toplevel):
         if hasattr(self, "start_btn") and self.start_btn.winfo_exists():
             self.start_btn.destroy()
 
-        self.search_group = Frame(self.left, bg="#62a4c2", width=15)
+        self.search_group = Frame(self.left, bg="#62a4c2", width=9)
         self.search_group.pack(padx=5, pady=30, fill="x")
 
         self.search_wrap = Frame(self.search_group, bg="#396392")
@@ -76,7 +76,7 @@ class Weather_Window(Toplevel):
             font=("Helvetica", 38), bg="#f0f8ff", fg="#95a5a6",
             relief="flat", insertbackground="#2c3e50",
             highlightthickness=1, highlightbackground="#132232",
-            highlightcolor="#ccd6f1", width=15
+            highlightcolor="#ccd6f1", width=8
         )
         self.search_entry.pack(side="left", fill="x", expand=True,
                                ipady=10, padx=(18, 8), pady=5)
