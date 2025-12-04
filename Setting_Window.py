@@ -7,10 +7,7 @@ class Setting_Window(Toplevel):
         super().__init__(master)
 
         self.title('Settings')
-        self.an = self.winfo_screenwidth()
-        self.al = self.winfo_screenheight()
-        self.tam = '%dx%d'%(self.an,self.al)
-        self.geometry(self.tam)
+        self.geometry('850x880')
         self.setting_label = Label(self, text='Settings', font=('Helvetica', 48), bg="#a7c7e7").pack(anchor='center',pady=60)
         
         self.Sliders("Master")
