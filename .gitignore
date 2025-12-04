@@ -1,4 +1,5 @@
 tasks.json
-__pycache__/*.pyc
+src/__pycache__/*.pyc
 build/*
 dist/MainMenu/*
+Weatherbot.egg-info

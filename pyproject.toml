@@ -1,19 +1,18 @@
-[build-system]
-requires = ["hatchling >= 1.26"]
-build-backend = "hatchling.build"
-
 [project]
 dynamic = ["version"]
 name = "Weatherbot"
 dependencies = [
     "requests",
-    "tkinter",
-    "os",
-    "sys",
     "pyglet",
-    "pillow"
+    "pillow",
+    "pgeocode"
 ]
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 
 [project.urls]
 Homepage = "https://github.com/Jonrussel1/WeatherBot"
+
+[tool.setuptools]
+"packages" = ["src"]
