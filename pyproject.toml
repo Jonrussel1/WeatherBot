@@ -1,0 +1,19 @@
+[build-system]
+requires = ["hatchling >= 1.26"]
+build-backend = "hatchling.build"
+
+[project]
+dynamic = ["version"]
+name = "Weatherbot"
+dependencies = [
+    "requests",
+    "tkinter",
+    "os",
+    "sys",
+    "pyglet",
+    "pillow"
+]
+readme = "README.md"
+
+[project.urls]
+Homepage = "https://github.com/Jonrussel1/WeatherBot"
