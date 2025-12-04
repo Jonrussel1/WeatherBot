@@ -9,35 +9,35 @@ class Todo_Window(Toplevel):
 
         #title, icon, size
         self.title('Task Manager')
-        self.geometry("2500x1450")
+        self.geometry("1440x1024")
         self.configure(background="#678bb0")
 
         #Task input frame includes radio and task buttons
         self.input_frame = Frame(self, bg="#c6d9ed")
-        self.input_frame.pack(side='top', pady=30, anchor='nw',fill='x')
-        self.task_label = Label(self.input_frame, text='Tasks:', bg="#c6d9ed", fg="#1f2b33", font=("Helvetica",50))
-        self.task_label.pack(pady=30, padx=5,side='left')
-        self.task_entry = Entry(self.input_frame, font=('Helvetica',44))
-        self.task_entry.pack(side='left',pady=30,padx=20)
+        self.input_frame.pack(side='top',padx=10, pady=30, anchor='nw',fill='x')
+        self.task_label = Label(self.input_frame, text='Enter task(s):', bg="#c6d9ed", fg="#1f2b33", font=("Helvetica",40,'bold'))
+        self.task_label.pack(pady=30, padx=10,side='left')
+        self.task_entry = Entry(self.input_frame, font=('Helvetica',40, 'bold'), width=7)
+        self.task_entry.pack(side='left',pady=30,padx=5)
         #radio buttons
         self.category_var = StringVar(value="outdoor")
-        self.outdoor_b = Radiobutton(self.input_frame, text="Outdoor", variable=self.category_var, value="outdoor",
-        bg="#c6d9ed", fg="#1f2b33",font=('Helvetica', 40))
-        self.outdoor_b.pack(pady=30, side='left', padx=10)
-        self.indoor_b = Radiobutton(self.input_frame, text="Indoor", variable=self.category_var, value="indoor",
-        bg="#c6d9ed", fg="#1f2b33", font=('Helvetica', 40),borderwidth=10)
-        self.indoor_b.pack(pady=30,side='left',padx=20)
+        self.outdoor_b = Radiobutton(self.input_frame, text="outdoor", variable=self.category_var, value="outdoor",
+        bg="#c6d9ed", fg="#1f2b33",font=('Helvetica', 40,'bold'))
+        self.outdoor_b.pack(pady=30, side='left', padx=15)
+        self.indoor_b = Radiobutton(self.input_frame, text="indoor", variable=self.category_var, value="indoor",
+        bg="#c6d9ed", fg="#1f2b33", font=('Helvetica', 40,'bold'))
+        self.indoor_b.pack(pady=30,side='left',padx=5)
         #add task button
         self.task_button = Button(self.input_frame, text="Add Task",bd=25, command=self.add_new_task,
-        font=('Helvetica', 40))
-        self.task_button.pack(side='right',pady=20,padx=10)
+        font=('Helvetica', 38, 'bold'), bg="#4389b8", fg="#ffffff")
+        self.task_button.pack(anchor='ne',pady=20,padx=0)
         
         #Task list frame includes tasks that were entered...
         self.list_frame = Frame(self, bg="#c6d9ed")
         self.list_frame.pack(fill="both",expand=True,anchor='n')
         
         self.your_tasks = Label(self.list_frame, text="Your Tasks:", font=("Helvetica", 46, "bold"), bg="#c6d9ed",fg="#1f2b33")
-        self.your_tasks.pack(anchor="sw", pady=35)
+        self.your_tasks.pack(anchor="n", pady=35)
         
         self.task_list_frame = Frame(self.list_frame, bg="#e8ebee")
         self.task_list_frame.pack(fill="both", expand=True)
