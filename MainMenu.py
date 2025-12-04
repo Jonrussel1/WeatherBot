@@ -18,6 +18,7 @@ class Weather_Main_Window(Tk):
         super().__init__()
         # to get the location of the current python file
         self.basedir = os.path.dirname(os.path.abspath(__file__))
+        self.seperator = os.sep
 
         #title, icon, size
         self.title('WeatherBot')
@@ -39,7 +40,7 @@ class Weather_Main_Window(Tk):
    
         
         self.my_label = Label(self, text='Welcome to WeatherBot', bg='#8dbbdc') 
-        self.cf = pg.font.add_file(self.basedir + '/anda.ttf')
+        self.cf = pg.font.add_file(self.basedir + self.sep + 'anda.ttf')
         self.my_label.configure(font=(self.cf, 100, "bold"), width=27, height=2, bd=10, background="#a7c7e7", relief="solid")
         self.my_label.pack(pady=100)
         
@@ -62,7 +63,7 @@ class Weather_Main_Window(Tk):
     
     #image for background...
     def background_image(self):
-        self.imgzero = Image.open(self.basedir+"/clouds0.png")
+        self.imgzero = Image.open(self.basedir+self.sep+"clouds0.png")
         self.imgresize = self.imgzero.resize((2800,1800))
         self.img = ImageTk.PhotoImage(self.imgresize)
         self.labelzero = Label(image=self.img).place(x=0, y=0)
@@ -144,7 +145,7 @@ class Weather_Main_Window(Tk):
     def Setting_Button(self):
         
         try:
-            self.sett_img = PhotoImage(file=self.basedir + "/gear3.png").subsample(1,1)
+            self.sett_img = PhotoImage(file=self.basedir + self.sep+"gear3.png").subsample(1,1)
         except Exception:
             self.sett_img = None
         
