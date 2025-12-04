@@ -2,4 +2,3 @@ tasks.json
 __pycache__/*.pyc
 build/*
 dist/MainMenu/*
-MainMenu.spec
