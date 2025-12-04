@@ -7,16 +7,16 @@ class Setting_Window(Toplevel):
         super().__init__(master)
 
         self.title('Settings')
-        self.geometry('850x880')
-        self.setting_label = Label(self, text='Settings', font=('Helvetica', 48), bg="#a7c7e7").pack(anchor='center',pady=60)
+        self.geometry('320x569')
+        self.setting_label = Label(self, text='Settings', font=('Helvetica', 40), bg="#a7c7e7").pack(anchor='center',pady=30)
         
         self.Sliders("Master")
         self.Sliders("Music")
         self.Sliders("SFX")
 
     def Sliders(self, name):
-        self.slider_label = Label(self, text=name,font=('Helvetica', 46),bg="#a7c7e7").pack(anchor="nw")
+        self.slider_label = Label(self, text=name,font=('Helvetica', 30),bg="#a7c7e7").pack(anchor="nw")
         self.Slider = Scale(self, from_=0, to=100, orient="horizontal")
         self.Slider.set(value=10)
-        self.Slider.configure(font=("Helvetica", 34, "bold"))
+        self.Slider.configure(font=("Helvetica", 30, "bold"))
         self.Slider.pack(padx=10, pady=2, fill="x")
